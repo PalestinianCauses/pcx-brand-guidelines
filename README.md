@@ -185,6 +185,10 @@ pnpm release v1.2.4
 
 The development kit guards a release: its version, its notes and its commit. The release then publishes the package to npm under the same version. `package.json` names no version, because the version lives on GitHub.
 
+## Terms of use
+
+All rights reserved. The repository is public so that the PCX brand can be read. It grants no licence to copy, change, share or use its contents, and that includes the PCX name, the logo, the brand's values and its words. The file `LICENSE` holds the terms.
+
 ## The kit's files
 
 `kit/`, `.github/`, `.coderabbit.yaml`, `.prettierrc.json`, `.npmrc`, `.nvmrc` and `.gitignore` are copies from the PCX development kit. A change to them is made in the kit first.
