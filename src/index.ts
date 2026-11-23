@@ -24,6 +24,10 @@ export {
   TIME_INSTANT,
 } from "./motion";
 export { HEIGHT_FINGER, default as SHAPE, UNIT } from "./shape";
+export { default as STORY } from "./story";
+export type { StoryID, StoryPart, StoryQuote } from "./story";
+export { default as STRATEGY } from "./strategy";
+export type { Offer, StrategyPoint } from "./strategy";
 export {
   getSize,
   SCREEN_LAPTOP,
@@ -32,3 +36,5 @@ export {
   default as TYPE,
 } from "./type";
 export type { Leading, TypeStep, TypeStepID } from "./type";
+export { default as VOICE, WORDS_HYPE } from "./voice";
+export type { VoiceLayer, VoicePlace, VoicePoint } from "./voice";
