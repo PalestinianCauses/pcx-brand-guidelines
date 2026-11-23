@@ -16,6 +16,13 @@ export {
   PRINCIPLES_LOGO,
 } from "./logo";
 export type { LogoRule } from "./logo";
+export {
+  getEntranceTime,
+  default as MOTION,
+  MOTION_REDUCED,
+  TIME_FLOW,
+  TIME_INSTANT,
+} from "./motion";
 export { HEIGHT_FINGER, default as SHAPE, UNIT } from "./shape";
 export {
   getSize,
