@@ -58,7 +58,7 @@ const LOGO = {
 
   // The room around the mark, as a share of its height. Nothing enters it:
   // no type, no edge, no detail of a photo.
-  clearSpace: 0.25,
+  spaceClear: 0.25,
 
   // The least height of the mark, in pixels on a screen and in millimetres
   // in print. Under it, PCX is written in Gilroy and the mark is left out.

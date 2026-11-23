@@ -33,7 +33,7 @@ test("the mark is white or the darkest grey", () => {
 });
 
 test("the mark keeps a quarter of its height clear, and its least heights", () => {
-  assert.equal(LOGO.clearSpace, 0.25);
+  assert.equal(LOGO.spaceClear, 0.25);
   assert.deepEqual(LOGO.heightLeast, { screen: 16, print: 5 });
 });
 
