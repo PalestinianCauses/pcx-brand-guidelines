@@ -27,6 +27,10 @@ const SECTIONS = ["Summary", "Testing", "Limitations"];
 
 type PackageFile = Partial<Record<string, Record<string, string>>>;
 
+// What the guard of a package reads in package.json. npm fixes the names of
+// its fields, so they are read by name and not written into a type.
+type PackageFields = Partial<Record<string, unknown>>;
+
 type Deploys = boolean | Partial<Record<string, boolean>> | null | undefined;
 
 type SettingsHost = {
@@ -114,6 +118,46 @@ export const inspectVersions = function inspectVersions(
           `${name} is set to "${version}" in ${field}. A package is installed at an exact version.`,
       ),
   );
+};
+
+// A project that is a package for npm says so in package.json:
+// "publishConfig.access" is "public". The release workflow builds it and
+// publishes it, so it needs a build script and the list of files that the
+// package holds. It must not be private, and it names no version, because
+// the release gives it one.
+export const inspectPackage = function inspectPackage(
+  packageText: string,
+): string[] {
+  const packageFile = JSON.parse(packageText) as PackageFields;
+  const settings = packageFile.publishConfig as PackageFields | undefined;
+  const scripts = packageFile.scripts as PackageFields | undefined;
+  const { files } = packageFile;
+
+  if (settings?.access !== "public") return [];
+
+  const problems: string[] = [];
+
+  if (packageFile.private === true)
+    problems.push(
+      'package.json sets "publishConfig.access" to "public" and "private" to true. A package for npm is not private.',
+    );
+
+  if (!scripts?.build)
+    problems.push(
+      'package.json has no "build" script. The release workflow builds a package before it publishes it.',
+    );
+
+  if (!Array.isArray(files) || files.length === 0)
+    problems.push(
+      'package.json has no "files". A package names the files it holds, so that nothing else is published.',
+    );
+
+  if (packageFile.version !== undefined)
+    problems.push(
+      "package.json names a version. The version lives on GitHub, and the release workflow gives it to the package.",
+    );
+
+  return problems;
 };
 
 // Vercel reads each name in the rules as a pattern for branch names, and one

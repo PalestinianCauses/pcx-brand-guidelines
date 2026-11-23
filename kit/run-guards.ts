@@ -11,6 +11,7 @@ import {
   inspectCurrentBranch,
   inspectDeploys,
   inspectDescription,
+  inspectPackage,
   inspectRelease,
   inspectTitle,
   inspectVersionFile,
@@ -54,8 +55,11 @@ const isOnMain = function isOnMain(commit: string): boolean {
 // The guards on the files of the project. They hold for a pull request and for
 // a release.
 const inspectFiles = function inspectFiles(): string[] {
+  const packageText = readFileSync("package.json", "utf8");
+
   const problems = [
-    ...inspectVersions(readFileSync("package.json", "utf8")),
+    ...inspectVersions(packageText),
+    ...inspectPackage(packageText),
     ...(existsSync(FILE_HOST)
       ? inspectDeploys(readFileSync(FILE_HOST, "utf8"))
       : []),
