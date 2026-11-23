@@ -4,6 +4,10 @@
 // The least contrast for words of any size: level AA of WCAG 2.
 export const CONTRAST_WORDS = 4.5;
 
+// The least contrast for a part that is not words, such as a focus ring or
+// the line around a field: level AA of WCAG 2.
+export const CONTRAST_PARTS = 3;
+
 const PATTERN_COLOR = /^#[0-9a-f]{6}$/i;
 const PATTERN_PAIR = /[0-9a-f]{2}/gi;
 
