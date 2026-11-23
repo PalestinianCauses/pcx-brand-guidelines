@@ -8,15 +8,30 @@ Other PCX projects read the brand from here. The design system package builds it
 
 The parts arrive one at a time:
 
-| Part                      | Status  |
-| ------------------------- | ------- |
-| Colours and greys         | Planned |
-| Fonts                     | Planned |
-| Logo                      | Planned |
-| Type scale                | Planned |
-| Shape, lines and spacing  | Planned |
-| Motion                    | Planned |
-| Story, strategy and voice | Planned |
+| Part                      | Status    |
+| ------------------------- | --------- |
+| Colours and greys         | Available |
+| Fonts                     | Planned   |
+| Logo                      | Planned   |
+| Type scale                | Planned   |
+| Shape, lines and spacing  | Planned   |
+| Motion                    | Planned   |
+| Story, strategy and voice | Planned   |
+
+## Colours
+
+`src/colors.ts` holds the four brand colours and the greys.
+
+| Colour | Name              | Role      | Value     | Words on the darkest grey | Words on the lightest grey |
+| ------ | ----------------- | --------- | --------- | ------------------------- | -------------------------- |
+| Purple | Deep Tech Purple  | Structure | `#2e1a72` | No                        | Yes                        |
+| Blue   | Electric Blue     | Action    | `#1f8bff` | Yes                       | No                         |
+| Pink   | Digital Pink      | Creative  | `#ff4fa3` | Yes                       | No                         |
+| Yellow | Innovation Yellow | Signal    | `#ffd84d` | Yes                       | No                         |
+
+The greys are the slate of Tailwind CSS 4, from 50 to 950, as hex values. A test compares them with Tailwind's own list. That is why `tailwindcss` is installed, for the tests only.
+
+`src/contrast.ts` measures the contrast between two colours, with the formula of WCAG 2. A colour can carry words on a ground when the contrast is 4.5 or more. A test measures each brand colour on the darkest and on the lightest grey, so the two last columns of the table can't be wrong.
 
 ## How to run it
 
