@@ -64,6 +64,7 @@ The rules are written for TypeScript and JavaScript. For Python this holds:
 - A sentence ends with a period.
 - Product names and terms are written the house way: AirBnB, Next.JS, ShadCN, PNPM, and camel case and Pascal Case with spaces. A command or package name that a tool fixes stays as the tool writes it.
 - Everything in a repository is written for a public reader: issues, pull requests, commits, comments and documents. It is professional and in plain words. It names no person, quotes no conversation and points to no private document.
+- That rule is about how the work is written up. It does not cover what a project publishes on purpose as its own content. A brand's story may name its founders and quote a customer, once the owner has decided so.
 
 ## Numbers
 

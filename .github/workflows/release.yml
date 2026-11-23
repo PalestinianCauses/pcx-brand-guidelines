@@ -52,3 +52,61 @@ jobs:
           -f state=success
           -f context=released
           -f description="The release run passed for $GUARD_VERSION."
+
+  # A project that is a package goes to npm once the release run has passed.
+  # It says that it is one in package.json: "publishConfig.access" is
+  # "public", and "private" is not set. Any other project publishes nothing.
+  publish:
+    name: publish
+    needs: release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      VERSION_RELEASE: ${{ github.event.release.tag_name }}
+    steps:
+      # actions/checkout v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Find out whether the project is a package for npm
+        id: package
+        run: >-
+          echo "is_package=$(jq '.publishConfig.access == "public" and .private != true' package.json)"
+          >> "$GITHUB_OUTPUT"
+
+      # pnpm/action-setup v6.1.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115
+        if: steps.package.outputs.is_package == 'true'
+
+      # actions/setup-node v7.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        if: steps.package.outputs.is_package == 'true'
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install the packages the lock file names
+        if: steps.package.outputs.is_package == 'true'
+        run: pnpm install --frozen-lockfile
+
+      # The version lives on GitHub. The package gets it here, without the v,
+      # so package.json names no version in the repository.
+      - name: Give the package the version of the release
+        if: steps.package.outputs.is_package == 'true'
+        run: npm pkg set "version=${VERSION_RELEASE#v}"
+
+      - name: Build the package
+        if: steps.package.outputs.is_package == 'true'
+        run: pnpm build
+
+      # The version was just written into package.json, so the folder differs
+      # from its commit. That is why the check of git is left out.
+      - name: Publish the package to npm
+        if: steps.package.outputs.is_package == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish --no-git-checks

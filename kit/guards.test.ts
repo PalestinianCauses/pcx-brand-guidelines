@@ -7,6 +7,7 @@ import {
   inspectCurrentBranch,
   inspectDeploys,
   inspectDescription,
+  inspectPackage,
   inspectRelease,
   inspectTitle,
   inspectVersionFile,
@@ -320,4 +321,67 @@ test("a release with another version than the VERSION file is refused", () => {
     assert.equal(problems.length, 1, text);
     assert.match(problems[0], /VERSION file/);
   });
+});
+
+// A package.json of a package for npm, with what the guard asks for.
+const PACKAGE = {
+  name: "@scope/name",
+  publishConfig: { access: "public" },
+  scripts: { build: "tsc" },
+  files: ["dist"],
+};
+
+test("a package with a build script and its files passes", () => {
+  assert.deepEqual(inspectPackage(JSON.stringify(PACKAGE)), []);
+});
+
+test("a project that is not a package is left alone", () => {
+  const projects = [
+    { name: "a-page", private: true },
+    { name: "a-tool", version: "1.2.4" },
+    { name: "a-package", publishConfig: { access: "restricted" } },
+  ];
+
+  projects.forEach((project) => {
+    assert.deepEqual(inspectPackage(JSON.stringify(project)), [], project.name);
+  });
+});
+
+test("a package that is private is refused", () => {
+  const problems = inspectPackage(
+    JSON.stringify({ ...PACKAGE, private: true }),
+  );
+
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /not private/);
+});
+
+test("a package without a build script is refused", () => {
+  const problems = inspectPackage(JSON.stringify({ ...PACKAGE, scripts: {} }));
+
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /"build" script/);
+});
+
+test("a package without its files is refused", () => {
+  const packages = [
+    { ...PACKAGE, files: [] },
+    { ...PACKAGE, files: undefined },
+  ];
+
+  packages.forEach((packageFile) => {
+    const problems = inspectPackage(JSON.stringify(packageFile));
+
+    assert.equal(problems.length, 1);
+    assert.match(problems[0], /"files"/);
+  });
+});
+
+test("a package that names a version is refused", () => {
+  const problems = inspectPackage(
+    JSON.stringify({ ...PACKAGE, version: "1.2.4" }),
+  );
+
+  assert.equal(problems.length, 1);
+  assert.match(problems[0], /lives on GitHub/);
 });
