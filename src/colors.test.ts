@@ -6,7 +6,6 @@ import colorsTailwind from "tailwindcss/colors";
 import COLORS, { GROUND_DARK, GROUND_LIGHT, SLATE } from "./colors";
 import getContrast, { CONTRAST_WORDS } from "./contrast";
 
-const PATTERN_HEX = /^#[0-9a-f]{6}$/;
 const PATTERN_OKLCH = /^oklch\(([\d.]+)% ([\d.]+) ([\d.]+)\)$/;
 
 // One linear channel as two hex digits, with the curve of sRGB applied.
@@ -53,18 +52,19 @@ const getHex = function getHex(color: string): string {
   return hex;
 };
 
-test("the brand has its four colours, each with a name, a role and a hex value", () => {
-  assert.deepEqual(Object.keys(COLORS).sort(), [
-    "blue",
-    "pink",
-    "purple",
-    "yellow",
-  ]);
+test("the four brand colours keep their names, their roles and their values", () => {
+  const colors = Object.fromEntries(
+    Object.entries(COLORS).map(([id, color]) => [
+      id,
+      [color.name, color.role, color.value],
+    ]),
+  );
 
-  Object.values(COLORS).forEach((color) => {
-    assert.match(color.value, PATTERN_HEX);
-    assert.notEqual(color.name, "");
-    assert.notEqual(color.role, "");
+  assert.deepEqual(colors, {
+    purple: ["Deep Tech Purple", "Structure", "#2e1a72"],
+    blue: ["Electric Blue", "Action", "#1f8bff"],
+    pink: ["Digital Pink", "Creative", "#ff4fa3"],
+    yellow: ["Innovation Yellow", "Signal", "#ffd84d"],
   });
 });
 
