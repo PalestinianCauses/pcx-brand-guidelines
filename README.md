@@ -135,7 +135,7 @@ Not here: a guide on how to use the guidelines as a whole, and the rules of writ
 ## How to install it
 
 ```bash
-pnpm add @pcx-agency/brand-guidelines
+pnpm add @pcx.agency/brand-guidelines
 ```
 
 ## How to use it
@@ -143,13 +143,13 @@ pnpm add @pcx-agency/brand-guidelines
 Every value is imported by its name:
 
 ```ts
-import { COLORS, getSize, TYPE } from "@pcx-agency/brand-guidelines";
+import { COLORS, getSize, TYPE } from "@pcx.agency/brand-guidelines";
 
 const blue = COLORS.blue.value;
 const size = getSize(TYPE.display, 1024);
 ```
 
-The types come with the package. The logo's file is at `@pcx-agency/brand-guidelines/assets/logo/pcx-mark.svg`.
+The types come with the package. The logo's file is at `@pcx.agency/brand-guidelines/assets/logo/pcx-mark.svg`.
 
 ## How to run it
 
