@@ -14,7 +14,7 @@ The parts arrive one at a time:
 | Fonts                     | Available |
 | Logo                      | Available |
 | Type scale                | Available |
-| Shape, lines and spacing  | Planned   |
+| Shape, lines and spacing  | Available |
 | Motion                    | Planned   |
 | Story, strategy and voice | Planned   |
 
@@ -77,6 +77,26 @@ Not here yet: what may stand beside the mark, the mark beside words, the mark be
 Sizes are in pixels. The phone is a screen 375 pixels wide, and the laptop is one 1440 pixels wide. Between the two a size grows evenly with the screen, and `getSize` gives the size for any width. No text is smaller than 12 pixels.
 
 Not here: scales for slides, documents and print, and the rules for paragraphs.
+
+## Shape, lines and spacing
+
+`src/shape.ts` holds the shape: square corners, thin lines and close spacing.
+
+| Part                                    | Value                                                         |
+| --------------------------------------- | ------------------------------------------------------------- |
+| Corners                                 | Square, on buttons, fields, cards and tags                    |
+| Thin line                               | 1 pixel, around blocks and between rows                       |
+| Thick line                              | 2 pixels, for emphasis                                        |
+| Height of a button or a field           | 44 pixels, on every screen                                    |
+| Focus ring                              | The brand's blue, 2 pixels thick, 2 pixels away from the part |
+| Room inside a card                      | 20 pixels                                                     |
+| Room between two cards                  | None. They sit edge to edge and share a thin line             |
+| Room between a heading and what follows | 24 pixels                                                     |
+| Room above and below a section          | 64 pixels on a laptop, 48 pixels on a phone                   |
+
+Every space and every height is a multiple of 4 pixels, and a test proves it. A button or a field is 44 pixels high, the height a finger needs. Another test measures the focus ring on the darkest and on the lightest grey: a part that is not words needs a contrast of 3 or more.
+
+Not here: shadows and layers, breakpoints, and the colours of lines.
 
 ## How to run it
 
