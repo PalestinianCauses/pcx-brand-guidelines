@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: en-US
+tone_instructions: >-
+  Use plain words and short sentences. Say what is wrong and what to do about
+  it.
+
+reviews:
+  profile: chill
+  # A pull request is reviewed once, when it opens. A later push is not
+  # reviewed until a review is asked for with the comment
+  # "@coderabbitai review". Each review counts against the free reviews of the
+  # plan.
+  auto_review:
+    auto_incremental_review: false
+  commit_status: true
+  fail_commit_status: true
+  high_level_summary: false
+  high_level_summary_in_walkthrough: true
+  in_progress_fortune: false
+  poem: false
+  sequence_diagrams: false
+  suggested_labels: false
+  suggested_reviewers: false
+  path_instructions:
+    - path: "**/*"
+      instructions: |
+        Review against the coding style in kit/coding-style.md. Treat this
+        review as the only reading the change gets.
+
+        Flag each of these:
+        - A bug fix without a test that fails on the old code, or new
+          behaviour without a test of that behaviour.
+        - A new dependency with no reason in the pull request description.
+        - Leftovers: commented-out code, an unused file, console output, or a
+          TODO without a linked issue.
+        - A REVIEWED marker in a file or in package.json.
+        - A change that the brief in the linked issue does not ask for.
+        - A change to the kit's own files that the brief does not ask for:
+          kit/, .github/, .coderabbit.yaml and the settings files in the
+          root.
+        - A secret, a token or a key anywhere in the change.
+        - Wording that does not fit a public reader: a person's name, a quote
+          from a conversation, or a pointer to a private document.
+
+chat:
+  art: false
+
+knowledge_base:
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - kit/coding-style.md
