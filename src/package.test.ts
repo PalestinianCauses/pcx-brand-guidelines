@@ -61,7 +61,7 @@ test("the package says where its built code and its types are", async () => {
     types: string;
   };
 
-  assert.equal(packageFile.name, "@pcx-agency/brand-guidelines");
+  assert.equal(packageFile.name, "@pcx.agency/brand-guidelines");
   assert.deepEqual(packageFile.files, [FOLDER_BUILT, "assets"]);
   assert.equal(packageFile.main, `./${FOLDER_BUILT}/index.js`);
   assert.equal(packageFile.types, `./${FOLDER_BUILT}/index.d.ts`);
