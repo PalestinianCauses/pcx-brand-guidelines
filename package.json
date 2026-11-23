@@ -1,0 +1,40 @@
+{
+  "name": "pcx-brand-guidelines",
+  "private": true,
+  "description": "The PCX brand guidelines: the brand's colours, type, logo and rules as values.",
+  "packageManager": "pnpm@10.13.1",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --max-warnings 0",
+    "types": "tsc --noEmit",
+    "test": "tsx --test",
+    "check": "pnpm format:check && pnpm lint && pnpm types && pnpm test && pnpm guards && pnpm audit",
+    "guards": "tsx kit/run-guards.ts",
+    "release": "tsx kit/run-release.ts"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "3.3.7",
+    "@prettier/plugin-xml": "3.4.2",
+    "@types/node": "22.20.5",
+    "eslint": "9.39.5",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-import-resolver-typescript": "4.4.5",
+    "eslint-plugin-import": "2.32.0",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "eslint-plugin-prettier": "5.5.7",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "prettier": "3.10.1",
+    "prettier-plugin-tailwindcss": "0.8.1",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "minimatch@>=7.0.0 <11.0.1": "11.0.8"
+    }
+  }
+}
