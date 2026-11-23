@@ -52,6 +52,9 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: 0.8.1
         version: 0.8.1(prettier@3.10.1)
+      tailwindcss:
+        specifier: 4.3.5
+        version: 4.3.5
       tsx:
         specifier: 4.23.15
         version: 4.23.15
@@ -2621,6 +2624,12 @@ packages:
       }
     engines: { node: ^14.18.0 || >=16.0.0 }
 
+  tailwindcss@4.3.5:
+    resolution:
+      {
+        integrity: sha512-FcQk9BuffmEHJP2G0XmB2SplU1aLTI7j07Kunk+U74Ny+XiWOtzXz9aujFZ/avntw1e2cOv/3PkgzflQ7gX2vQ==,
+      }
+
   tinyglobby@0.2.17:
     resolution:
       {
@@ -4486,6 +4495,8 @@ snapshots:
     dependencies:
       "@dual-bundle/import-meta-resolve": 4.2.1
       "@pkgr/core": 0.3.6
+
+  tailwindcss@4.3.5: {}
 
   tinyglobby@0.2.17:
     dependencies:
