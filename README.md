@@ -132,12 +132,37 @@ The brand's own words follow the voice. Tests prove that they use none of the 43
 
 Not here: a guide on how to use the guidelines as a whole, and the rules of writing beyond the voice.
 
+## How to install it
+
+```bash
+pnpm add @pcx-agency/brand-guidelines
+```
+
+## How to use it
+
+Every value is imported by its name:
+
+```ts
+import { COLORS, getSize, TYPE } from "@pcx-agency/brand-guidelines";
+
+const blue = COLORS.blue.value;
+const size = getSize(TYPE.display, 1024);
+```
+
+The types come with the package. The logo's file is at `@pcx-agency/brand-guidelines/assets/logo/pcx-mark.svg`.
+
 ## How to run it
 
 There is nothing to run. The repository holds values, not a page.
 
 ```bash
 pnpm install
+```
+
+The package is built into the folder `build` with:
+
+```bash
+pnpm build
 ```
 
 ## How to test it
@@ -158,7 +183,7 @@ A maintainer approves every release. It is prepared as a draft on GitHub, with i
 pnpm release v1.2.4
 ```
 
-The development kit guards a release: its version, its notes and its commit.
+The development kit guards a release: its version, its notes and its commit. The release then publishes the package to npm under the same version. `package.json` names no version, because the version lives on GitHub.
 
 ## The kit's files
 
