@@ -16,8 +16,20 @@ export type Font = {
   isFreeToShare: boolean;
 };
 
-// The ending of a font file's name, with the dot.
-export const ENDINGS_FONT = [".eot", ".otf", ".ttf", ".woff", ".woff2"];
+// The ending of a font file's name, with the dot: single fonts, collections
+// of fonts, and the older formats of PostScript and of the Mac.
+export const ENDINGS_FONT = [
+  ".dfont",
+  ".eot",
+  ".otc",
+  ".otf",
+  ".pfa",
+  ".pfb",
+  ".ttc",
+  ".ttf",
+  ".woff",
+  ".woff2",
+];
 
 // Gilroy is a commercial font, so its files are never in a public repository, and
 // this repository holds no font file at all. A test guards that. JetBrains
