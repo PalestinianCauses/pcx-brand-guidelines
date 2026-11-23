@@ -12,7 +12,7 @@ The parts arrive one at a time:
 | ------------------------- | --------- |
 | Colours and greys         | Available |
 | Fonts                     | Available |
-| Logo                      | Planned   |
+| Logo                      | Available |
 | Type scale                | Planned   |
 | Shape, lines and spacing  | Planned   |
 | Motion                    | Planned   |
@@ -43,6 +43,21 @@ The greys are the slate of Tailwind CSS 4, from 50 to 950, as hex values. A test
 | JetBrains Mono | Monospace | Four, from Regular at 400 to Bold at 700 | SIL Open Font License 1.1 | Yes           |
 
 This repository holds no font file. Gilroy is a commercial font, so its files are never in a public repository, and a test fails when any font file is added here. A project that shows the brand loads the font files from its own place.
+
+## Logo
+
+The logo is one mark, with no wordmark and no second version. `assets/logo/pcx-mark.svg` is its file, and `src/logo.ts` holds the same drawing as a path, with the mark's rules. A test compares the two.
+
+| Rule         | Value                                                                 |
+| ------------ | --------------------------------------------------------------------- |
+| Grid         | 2290 by 1106 units                                                    |
+| Colour       | White, or the darkest grey                                            |
+| Clear space  | A quarter of the mark's height, on every side                         |
+| Least height | 16 pixels on a screen, 5 millimetres in print                         |
+| Under that   | PCX is written in Gilroy, and the mark is left out                    |
+| Misuse       | Eight rules, such as never stretching, rotating or outlining the mark |
+
+Not here yet: what may stand beside the mark, the mark beside words, the mark beside a partner's logo, and the mark as a lit object. They are planned for a later version.
 
 ## How to run it
 
