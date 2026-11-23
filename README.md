@@ -15,7 +15,7 @@ The parts arrive one at a time:
 | Logo                      | Available |
 | Type scale                | Available |
 | Shape, lines and spacing  | Available |
-| Motion                    | Planned   |
+| Motion                    | Available |
 | Story, strategy and voice | Planned   |
 
 ## Colours
@@ -97,6 +97,24 @@ Not here: scales for slides, documents and print, and the rules for paragraphs.
 Every space and every height is a multiple of 4 pixels, and a test proves it. A button or a field is 44 pixels high, the height a finger needs. Another test measures the focus ring on the darkest and on the lightest grey: a part that is not words needs a contrast of 3 or more.
 
 Not here: shadows and layers, breakpoints, and the colours of lines.
+
+## Motion
+
+`src/motion.ts` holds the motion: quick and plain. Things move a short way and settle at once.
+
+| Part                                                  | Value                                                      |
+| ----------------------------------------------------- | ---------------------------------------------------------- |
+| Small moves: the pointer over a button, a press       | 100 milliseconds                                           |
+| Medium moves: a tab that switches, a panel that opens | 200 milliseconds                                           |
+| Large moves: the entrance of a part                   | 400 milliseconds                                           |
+| Start and stop                                        | A fast start and a soft stop: `cubic-bezier(0.2, 0, 0, 1)` |
+| Distance of an entrance                               | 8 pixels up                                                |
+| Wait between two parts that enter                     | 40 milliseconds                                            |
+| A device that is set to reduce motion                 | Gets no motion                                             |
+
+`getEntranceTime` gives the time until the last of several parts has entered. Seven parts settle after 640 milliseconds. A test keeps that under 1000 milliseconds, the wait that breaks a visitor's flow of thought. Another keeps a small move within 100 milliseconds, the time that feels instant.
+
+Not here: longer times for large intro animations, and separate curves for entering and leaving.
 
 ## How to run it
 
