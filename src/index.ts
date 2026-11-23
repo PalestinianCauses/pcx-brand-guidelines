@@ -1,6 +1,7 @@
 export { default as COLORS, GROUND_DARK, GROUND_LIGHT, SLATE } from "./colors";
 export type { Color, ColorID } from "./colors";
 export {
+  CONTRAST_PARTS,
   CONTRAST_WORDS,
   default as getContrast,
   getLuminance,
@@ -15,6 +16,7 @@ export {
   PRINCIPLES_LOGO,
 } from "./logo";
 export type { LogoRule } from "./logo";
+export { HEIGHT_FINGER, default as SHAPE, UNIT } from "./shape";
 export {
   getSize,
   SCREEN_LAPTOP,
