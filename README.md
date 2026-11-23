@@ -13,7 +13,7 @@ The parts arrive one at a time:
 | Colours and greys         | Available |
 | Fonts                     | Available |
 | Logo                      | Available |
-| Type scale                | Planned   |
+| Type scale                | Available |
 | Shape, lines and spacing  | Planned   |
 | Motion                    | Planned   |
 | Story, strategy and voice | Planned   |
@@ -58,6 +58,25 @@ The logo is one mark, with no wordmark and no second version. `assets/logo/pcx-m
 | Misuse       | Eight rules, such as never stretching, rotating or outlining the mark |
 
 Not here yet: what may stand beside the mark, the mark beside words, the mark beside a partner's logo, and the mark as a lit object. They are planned for a later version.
+
+## Type scale
+
+`src/type.ts` holds the type scale: eight steps, from the one big line of a page down to code. Headings are set in sentence case, and only the label is in capitals.
+
+| Step       | Used for                   | Font           | Weight        | Phone | Laptop | Line height | Letter spacing |
+| ---------- | -------------------------- | -------------- | ------------- | ----- | ------ | ----------- | -------------- |
+| Display    | The one big line of a page | Gilroy         | ExtraBold 800 | 44    | 96     | 100 percent | -0.04 em       |
+| Title      | Page titles                | Gilroy         | ExtraBold 800 | 36    | 60     | 105 percent | -0.02 em       |
+| Heading    | Section headings           | Gilroy         | ExtraBold 800 | 28    | 40     | 115 percent | -0.02 em       |
+| Subheading | Block and card titles      | Gilroy         | Bold 700      | 20    | 24     | 120 percent | None           |
+| Body       | Reading text               | Gilroy         | Regular 400   | 18    | 18     | 28 pixels   | None           |
+| Note       | Small supporting text      | Gilroy         | Regular 400   | 14    | 14     | 20 pixels   | None           |
+| Label      | Labels and buttons         | JetBrains Mono | Medium 500    | 12    | 12     | 16 pixels   | 0.12 em        |
+| Code       | Code and figures           | JetBrains Mono | Regular 400   | 14    | 14     | 20 pixels   | None           |
+
+Sizes are in pixels. The phone is a screen 375 pixels wide, and the laptop is one 1440 pixels wide. Between the two a size grows evenly with the screen, and `getSize` gives the size for any width. No text is smaller than 12 pixels.
+
+Not here: scales for slides, documents and print, and the rules for paragraphs.
 
 ## How to run it
 
