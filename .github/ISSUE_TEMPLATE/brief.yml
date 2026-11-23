@@ -1,0 +1,34 @@
+name: Brief
+description: One task, with the criteria that say when it is done.
+body:
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: The task in one line.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why the task is needed, and what is already decided.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: What must be true for the task to be done, in a way that can be checked.
+    validations:
+      required: true
+
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: What this task does not touch.
+    validations:
+      required: true

@@ -1,0 +1,54 @@
+name: release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  statuses: write
+
+jobs:
+  release:
+    name: release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      GUARD_HEAD: ${{ github.sha }}
+      GUARD_NOTES: ${{ github.event.release.body }}
+      GUARD_VERSION: ${{ github.event.release.tag_name }}
+    steps:
+      # actions/checkout v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      # pnpm/action-setup v6.1.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115
+
+      # actions/setup-node v7.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install the packages the lock file names
+        run: pnpm install --frozen-lockfile
+
+      # With GUARD_VERSION set, the guards inspect the release.
+      - name: Run all checks on the released commit
+        run: pnpm check
+
+      # GitHub's rule for the production branch asks for this status. The rule
+      # did not count this run itself when that was tried. The step is the last
+      # one, so a commit gets the status only after all checks passed.
+      - name: Mark the commit as released
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PATH_STATUS: repos/${{ github.repository }}/statuses/${{ github.sha }}
+        run: >-
+          gh api --method POST "$PATH_STATUS" --silent
+          -f state=success
+          -f context=released
+          -f description="The release run passed for $GUARD_VERSION."

@@ -1,0 +1,51 @@
+name: checks
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      GUARD_BASE: ${{ github.event.pull_request.base.sha }}
+      GUARD_BRANCH: ${{ github.head_ref }}
+      GUARD_DESCRIPTION: ${{ github.event.pull_request.body }}
+      GUARD_HEAD: ${{ github.event.pull_request.head.sha }}
+      GUARD_TITLE: ${{ github.event.pull_request.title }}
+    steps:
+      # actions/checkout v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      # pnpm/action-setup v6.1.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115
+
+      # actions/setup-node v7.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install the packages the lock file names
+        run: pnpm install --frozen-lockfile
+
+      - name: Run all checks
+        run: pnpm check
+
+      - name: Scan the commits for secrets
+        run: >-
+          docker run --rm --volume "$PWD:/repository"
+          ghcr.io/gitleaks/gitleaks:v8.30.1 git --no-banner --redact
+          --log-opts="--diff-merges=first-parent $GUARD_BASE..$GUARD_HEAD" /repository
