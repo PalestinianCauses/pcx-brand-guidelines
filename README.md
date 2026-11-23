@@ -16,7 +16,7 @@ The parts arrive one at a time:
 | Type scale                | Available |
 | Shape, lines and spacing  | Available |
 | Motion                    | Available |
-| Story, strategy and voice | Planned   |
+| Story, strategy and voice | Available |
 
 ## Colours
 
@@ -115,6 +115,22 @@ Not here: shadows and layers, breakpoints, and the colours of lines.
 `getEntranceTime` gives the time until the last of several parts has entered. Seven parts settle after 640 milliseconds. A test keeps that under 1000 milliseconds, the wait that breaks a visitor's flow of thought. Another keeps a small move within 100 milliseconds, the time that feels instant.
 
 Not here: longer times for large intro animations, and separate curves for entering and leaving.
+
+## Story, strategy and voice
+
+Three files hold the brand's words. A test holds every one of them, so a word changes only on purpose.
+
+| File              | What it holds                                                                                                                                |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/story.ts`    | Three parts: how PalestinianCauses began, what was built on the way, and the question that led to PCX                                        |
+| `src/strategy.ts` | The positioning in one line, the mission and the vision, five values, who PCX serves, what it sells in order, and four traits of personality |
+| `src/voice.ts`    | The one reader the content speaks to, five voice principles, two layers of language, where each layer speaks, and the words never used       |
+
+The positioning is one line: "Digital systems built to perform beyond launch."
+
+The brand's own words follow the voice. Tests prove that they use none of the 43 words the voice leaves out, that they carry no exclamation mark, and that most of their sentences stay under 15 words.
+
+Not here: a guide on how to use the guidelines as a whole, and the rules of writing beyond the voice.
 
 ## How to run it
 
