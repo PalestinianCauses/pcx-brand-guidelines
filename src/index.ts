@@ -15,3 +15,11 @@ export {
   PRINCIPLES_LOGO,
 } from "./logo";
 export type { LogoRule } from "./logo";
+export {
+  getSize,
+  SCREEN_LAPTOP,
+  SCREEN_PHONE,
+  SIZE_LEAST,
+  default as TYPE,
+} from "./type";
+export type { Leading, TypeStep, TypeStepID } from "./type";
