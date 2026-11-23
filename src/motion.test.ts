@@ -17,6 +17,11 @@ test("the motion keeps its times, its curve, its distance and its wait", () => {
   });
 });
 
+test("the two limits of time keep their values", () => {
+  assert.equal(TIME_INSTANT, 100);
+  assert.equal(TIME_FLOW, 1000);
+});
+
 test("each time is twice the one before it", () => {
   assert.equal(MOTION.times.medium, MOTION.times.small * 2);
   assert.equal(MOTION.times.large, MOTION.times.medium * 2);
