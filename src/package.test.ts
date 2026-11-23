@@ -78,3 +78,14 @@ test("the logo's file is among the files of the package", async () => {
   assert.ok(packageFile.files.includes(folderLogo));
   await access(values.FILE_LOGO);
 });
+
+test("the package reserves all rights", async () => {
+  const packageFile = JSON.parse(await readFile(FILE_PACKAGE, "utf8")) as {
+    license: string;
+  };
+
+  const terms = await readFile("LICENSE", "utf8");
+
+  assert.equal(packageFile.license, "UNLICENSED");
+  assert.match(terms, /All rights reserved\./);
+});
