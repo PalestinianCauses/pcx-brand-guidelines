@@ -5,6 +5,7 @@ import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
+import { pathToFileURL } from "node:url";
 
 import * as values from "./index";
 
@@ -32,10 +33,13 @@ test("the package builds, and it gives what the source gives", async (context) =
   // The types are built beside the code.
   await access(join(folder, "index.d.ts"));
 
-  // Node code that imports, and does not require, finds every name too.
+  // Node code that imports, and does not require, finds every name too. The
+  // built file is named as a URL, so that a folder with a # or a % in its
+  // name is still found.
   const names = Object.keys(values).sort().join(", ");
+  const address = pathToFileURL(join(folder, "index.js")).href;
   const code = [
-    `import { ${names} } from ${JSON.stringify(join(folder, "index.js"))};`,
+    `import { ${names} } from ${JSON.stringify(address)};`,
     "process.stdout.write(COLORS.blue.value);",
   ].join("\n");
 
