@@ -80,5 +80,9 @@ test("this repository holds no font file", async () => {
 test("a file is a font file by the ending of its name", () => {
   assert.equal(isFontFile("assets/gilroy-heavy.woff2"), true);
   assert.equal(isFontFile("assets/Gilroy-Heavy.OTF"), true);
+  assert.equal(isFontFile("assets/brand.ttc"), true);
+  assert.equal(isFontFile("assets/BRAND.OTC"), true);
+  assert.equal(isFontFile("assets/Brand.dfont"), true);
   assert.equal(isFontFile("src/fonts.ts"), false);
+  assert.equal(isFontFile("assets/logo/pcx-mark.svg"), false);
 });
