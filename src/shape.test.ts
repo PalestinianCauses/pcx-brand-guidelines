@@ -21,6 +21,12 @@ test("the shape keeps its corners, lines, heights and spaces", () => {
   });
 });
 
+test("the unit, the height for a finger and the contrast for parts keep their values", () => {
+  assert.equal(UNIT, 4);
+  assert.equal(HEIGHT_FINGER, 44);
+  assert.equal(CONTRAST_PARTS, 3);
+});
+
 test("every space and the height of a control are multiples of the unit", () => {
   const sizes = [...Object.values(SHAPE.spaces), SHAPE.heightControl];
   const sizesUnfit = sizes.filter((size) => size % UNIT !== 0);
