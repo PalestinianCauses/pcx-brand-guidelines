@@ -5,3 +5,5 @@ export {
   default as getContrast,
   getLuminance,
 } from "./contrast";
+export { ENDINGS_FONT, default as FONTS } from "./fonts";
+export type { Font, FontID, FontWeight } from "./fonts";
