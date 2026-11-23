@@ -11,7 +11,7 @@ The parts arrive one at a time:
 | Part                      | Status    |
 | ------------------------- | --------- |
 | Colours and greys         | Available |
-| Fonts                     | Planned   |
+| Fonts                     | Available |
 | Logo                      | Planned   |
 | Type scale                | Planned   |
 | Shape, lines and spacing  | Planned   |
@@ -32,6 +32,17 @@ The parts arrive one at a time:
 The greys are the slate of Tailwind CSS 4, from 50 to 950, as hex values. A test compares them with Tailwind's own list. That is why `tailwindcss` is installed, for the tests only.
 
 `src/contrast.ts` measures the contrast between two colours, with the formula of WCAG 2. A colour can carry words on a ground when the contrast is 4.5 or more. A test measures each brand colour on the darkest and on the lightest grey, so the two last columns of the table can't be wrong.
+
+## Fonts
+
+`src/fonts.ts` holds the two fonts.
+
+| Font           | Kind      | Weights                                  | License                   | Free to share |
+| -------------- | --------- | ---------------------------------------- | ------------------------- | ------------- |
+| Gilroy         | Sans      | Ten, from Thin at 100 to Heavy at 950    | Commercial                | No            |
+| JetBrains Mono | Monospace | Four, from Regular at 400 to Bold at 700 | SIL Open Font License 1.1 | Yes           |
+
+This repository holds no font file. Gilroy is a commercial font, so its files are never in a public repository, and a test fails when any font file is added here. A project that shows the brand loads the font files from its own place.
 
 ## How to run it
 
