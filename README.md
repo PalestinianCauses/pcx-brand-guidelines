@@ -61,26 +61,28 @@ Not here yet: what may stand beside the mark, the mark beside words, the mark be
 
 ## Type scale
 
-`src/type.ts` holds the type scale: eight steps, from the one big line of a page down to code. Headings are set in sentence case, and only the label is in capitals.
+`src/type.ts` holds the type scale: eight steps, from the one big line of a page down to code. The four headings and the label are shown in capitals. Their words are still written in sentence case, and so is all other text.
 
-| Step       | Used for                   | Font           | Weight        | Phone | Laptop | Line height | Letter spacing |
-| ---------- | -------------------------- | -------------- | ------------- | ----- | ------ | ----------- | -------------- |
-| Display    | The one big line of a page | Gilroy         | ExtraBold 800 | 44    | 96     | 100 percent | -0.04 em       |
-| Title      | Page titles                | Gilroy         | ExtraBold 800 | 36    | 60     | 105 percent | -0.02 em       |
-| Heading    | Section headings           | Gilroy         | ExtraBold 800 | 28    | 40     | 115 percent | -0.02 em       |
-| Subheading | Block and card titles      | Gilroy         | Bold 700      | 20    | 24     | 120 percent | None           |
-| Body       | Reading text               | Gilroy         | Regular 400   | 18    | 18     | 28 pixels   | None           |
-| Note       | Small supporting text      | Gilroy         | Regular 400   | 14    | 14     | 20 pixels   | None           |
-| Label      | Labels and buttons         | JetBrains Mono | Medium 500    | 12    | 12     | 16 pixels   | 0.12 em        |
-| Code       | Code and figures           | JetBrains Mono | Regular 400   | 14    | 14     | 20 pixels   | None           |
+| Step       | Used for                   | Font           | Weight      | Shown in   | Phone | Laptop | Line height | Letter spacing |
+| ---------- | -------------------------- | -------------- | ----------- | ---------- | ----- | ------ | ----------- | -------------- |
+| Display    | The one big line of a page | Gilroy         | Heavy 950   | Capitals   | 54    | 98     | 92 percent  | -0.032 em      |
+| Title      | Page titles                | Gilroy         | Heavy 950   | Capitals   | 46    | 88     | 94 percent  | -0.032 em      |
+| Heading    | Section headings           | Gilroy         | Heavy 950   | Capitals   | 38    | 80     | 96 percent  | -0.032 em      |
+| Subheading | Block and card titles      | Gilroy         | Heavy 950   | Capitals   | 24    | 24     | 100 percent | -0.02 em       |
+| Body       | Reading text               | Gilroy         | Medium 500  | As written | 16    | 18     | 160 percent | None           |
+| Note       | Small supporting text      | Gilroy         | Medium 500  | As written | 15    | 15     | 150 percent | None           |
+| Label      | Labels and buttons         | JetBrains Mono | Medium 500  | Capitals   | 12    | 12     | 16 pixels   | 0.14 em        |
+| Code       | Code and figures           | JetBrains Mono | Regular 400 | As written | 14    | 14     | 20 pixels   | None           |
 
-Sizes are in pixels. The phone is a screen 375 pixels wide, and the laptop is one 1440 pixels wide. Between the two a size grows evenly with the screen, and `getSize` gives the size for any width. No text is smaller than 12 pixels.
+Sizes are in pixels. The phone is a screen 375 pixels wide, and the laptop is one 1440 pixels wide. Between the two a size grows evenly with the screen, and `getSize` gives the size for any width. No text is smaller than 12 pixels. A line of reading text is at least one and a half times its size, and a test holds that.
+
+Since v1.1.0 the scale follows the PCX website. Before, the headings were smaller, lighter and shown as written.
 
 Not here: scales for slides, documents and print, and the rules for paragraphs.
 
 ## Shape, lines and spacing
 
-`src/shape.ts` holds the shape: square corners, thin lines and close spacing.
+`src/shape.ts` holds the shape: square corners, thin lines and spaces in steps of 4 pixels.
 
 | Part                                    | Value                                                         |
 | --------------------------------------- | ------------------------------------------------------------- |
@@ -89,12 +91,17 @@ Not here: scales for slides, documents and print, and the rules for paragraphs.
 | Thick line                              | 2 pixels, for emphasis                                        |
 | Height of a button or a field           | 44 pixels, on every screen                                    |
 | Focus ring                              | The brand's blue, 2 pixels thick, 2 pixels away from the part |
-| Room inside a card                      | 20 pixels                                                     |
-| Room between two cards                  | None. They sit edge to edge and share a thin line             |
-| Room between a heading and what follows | 24 pixels                                                     |
-| Room above and below a section          | 64 pixels on a laptop, 48 pixels on a phone                   |
+| Room inside a card                      | 24 pixels                                                     |
+| Room between two cards                  | 16 pixels                                                     |
+| Room between a heading and what follows | 28 pixels                                                     |
+| Room above a section                    | 48 pixels on a phone, 96 pixels on a laptop                   |
+| Room below a section                    | 56 pixels on a phone, 96 pixels on a laptop                   |
 
 Every space and every height is a multiple of 4 pixels, and a test proves it. A button or a field is 44 pixels high, the height a finger needs. Another test measures the focus ring on the darkest and on the lightest grey: a part that is not words needs a contrast of 3 or more.
+
+Between a phone and a laptop, the room around a section grows evenly with the screen, as a size does. `getScaled` gives a value for any width.
+
+Since v1.1.0 the room follows the PCX website too. The names `sectionPhone` and `sectionLaptop` are still there, and they hold the room above a section. They are marked as deprecated, and they leave with the next major version.
 
 Not here: shadows and layers, breakpoints, and the colours of lines.
 
