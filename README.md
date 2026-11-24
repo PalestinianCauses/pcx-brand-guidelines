@@ -33,7 +33,7 @@ The greys are the slate of Tailwind CSS 4, from 50 to 950, as hex values. A test
 
 `src/contrast.ts` measures the contrast between two colours, with the formula of WCAG 2. A colour can carry words on a ground when the contrast is 4.5 or more. A test measures each brand colour on the darkest and on the lightest grey, so the two last columns of the table can't be wrong.
 
-A contrast is shown to a person with `getContrastShown`: with one digit after the point, rounded down to the nearest one that ends in an even digit or in 5. So 9.33 is shown as 9.2, and 14.57 as 14.5. It is rounded down and never up, so a shown contrast is never more than the measured one. Both limits, 4.5 and 3.0, lie on that grid, so a shown contrast reaches a limit exactly when the measured one does.
+A contrast is shown to a person with `getContrastShown`: with one digit after the point, rounded down to the nearest one that ends in an even digit or in 5. So 9.34 is shown as 9.2, and 14.56 as 14.5. It is rounded down and never up, so a shown contrast is never more than the measured one. Both limits, 4.5 and 3.0, lie on that grid, so a shown contrast reaches a limit exactly when the measured one does.
 
 ## Fonts
 

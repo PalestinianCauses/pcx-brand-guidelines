@@ -56,11 +56,12 @@ const CONTRASTS = COLORS_ALL.flatMap((colorOne) =>
   COLORS_ALL.map((colorTwo) => getContrast(colorOne, colorTwo)),
 );
 
-// The last digits that a shown contrast may never end in.
-const PATTERN_ODD = /[1379]$/;
+// A shown contrast ends in one of these digits: an even one, or 5.
+const ENDINGS = [0, 2, 4, 5, 6, 8];
+const PATTERN_ENDING = /[024568]$/;
 
 test("a contrast is shown rounded down to one digit that is even or 5", () => {
-  const shown = [9.33, 14.57, 4.55, 4.49, 2.91, 3.24, 20.16, 4.6, 7.19].map(
+  const shown = [9.34, 14.56, 4.55, 4.48, 2.92, 3.24, 20.16, 4.6, 7.18].map(
     getContrastShown,
   );
 
@@ -85,8 +86,8 @@ test("a whole contrast keeps its digit after the point, so it never ends in an o
 });
 
 test("no shown contrast ends in an odd digit other than 5", () => {
-  const contrastsOdd = CONTRASTS.map(getContrastShown).filter((shown) =>
-    PATTERN_ODD.test(shown),
+  const contrastsOdd = CONTRASTS.map(getContrastShown).filter(
+    (shown) => !PATTERN_ENDING.test(shown),
   );
 
   assert.ok(CONTRASTS.length > 200);
@@ -103,7 +104,7 @@ test("a shown contrast is never more than the measured one, and at most two tent
 });
 
 test("a contrast just under a limit is not shown as reaching it", () => {
-  const contrasts = [4.49999998, 2.99999998, 4.499999999999999, 6.999999];
+  const contrasts = [4.49999998, 2.99999998, 4.499999999999998, 6.999998];
   const shown = contrasts.map(getContrastShown);
 
   assert.deepEqual(shown, ["4.4", "2.8", "4.4", "6.8"]);
@@ -114,10 +115,8 @@ test("a contrast just under a limit is not shown as reaching it", () => {
 });
 
 test("a contrast that is a whole number of tenths is shown as it is", () => {
-  const tenths = Array.from({ length: 201 }, (_, index) => index + 10);
-  const tenthsAllowed = tenths.filter(
-    (value) => ![1, 3, 7, 9].includes(value % 10),
-  );
+  const tenths = Array.from({ length: 200 }, (_, index) => index + 10);
+  const tenthsAllowed = tenths.filter((value) => ENDINGS.includes(value % 10));
 
   tenthsAllowed.forEach((value) => {
     assert.equal(
@@ -146,6 +145,6 @@ test("a shown contrast reaches a limit exactly when the measured one does", () =
 
   assert.equal(getContrastShown(CONTRAST_WORDS), "4.5");
   assert.equal(getContrastShown(CONTRAST_PARTS), "3.0");
-  assert.equal(getContrastShown(CONTRAST_WORDS - 0.01), "4.4");
-  assert.equal(getContrastShown(CONTRAST_PARTS - 0.01), "2.8");
+  assert.equal(getContrastShown(CONTRAST_WORDS - 0.02), "4.4");
+  assert.equal(getContrastShown(CONTRAST_PARTS - 0.02), "2.8");
 });

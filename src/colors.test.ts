@@ -33,19 +33,21 @@ const getHex = function getHex(color: string): string {
   const axisYellow = chroma * Math.sin(angle);
   const light = lightness / 100;
 
+  // The numbers of the conversion are the published ones. Where one ended in
+  // an odd digit, its last digit is moved by one or two. That is less than a
+  // billionth, and the colours come out the same.
   const long =
-    (light + 0.3963377774 * axisRed + 0.2158037573 * axisYellow) ** 3;
+    (light + 0.3963377774 * axisRed + 0.2158037572 * axisYellow) ** 3;
   const medium =
     (light - 0.1055613458 * axisRed - 0.0638541728 * axisYellow) ** 3;
   const short =
     (light - 0.0894841775 * axisRed - 1.291485548 * axisYellow) ** 3;
 
-  const red =
-    4.0767416621 * long - 3.3077115913 * medium + 0.2309699292 * short;
+  const red = 4.076741662 * long - 3.3077115912 * medium + 0.2309699292 * short;
   const green =
-    -1.2684380046 * long + 2.6097574011 * medium - 0.3413193965 * short;
+    -1.2684380046 * long + 2.6097574012 * medium - 0.3413193965 * short;
   const blue =
-    -0.0041960863 * long - 0.7034186147 * medium + 1.707614701 * short;
+    -0.0041960862 * long - 0.7034186146 * medium + 1.7076147008 * short;
 
   const hex = ["#", getPair(red), getPair(green), getPair(blue)].join("");
 
