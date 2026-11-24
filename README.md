@@ -61,22 +61,24 @@ Not here yet: what may stand beside the mark, the mark beside words, the mark be
 
 ## Type scale
 
-`src/type.ts` holds the type scale: eight steps, from the one big line of a page down to code. The four headings and the label are shown in capitals. Their words are still written in sentence case, and so is all other text.
+`src/type.ts` holds the type scale: eight steps, from the one big line of a page down to code. The three large headings and the label are shown in capitals. Their words are still written in sentence case. A sub-heading and all other text are shown as they are written.
 
-| Step       | Used for                   | Font           | Weight      | Shown in   | Phone | Laptop | Line height | Letter spacing |
-| ---------- | -------------------------- | -------------- | ----------- | ---------- | ----- | ------ | ----------- | -------------- |
-| Display    | The one big line of a page | Gilroy         | Heavy 950   | Capitals   | 54    | 98     | 92 percent  | -0.032 em      |
-| Title      | Page titles                | Gilroy         | Heavy 950   | Capitals   | 46    | 88     | 94 percent  | -0.032 em      |
-| Heading    | Section headings           | Gilroy         | Heavy 950   | Capitals   | 38    | 80     | 96 percent  | -0.032 em      |
-| Subheading | Block and card titles      | Gilroy         | Heavy 950   | Capitals   | 24    | 24     | 100 percent | -0.02 em       |
-| Body       | Reading text               | Gilroy         | Medium 500  | As written | 16    | 18     | 160 percent | None           |
-| Note       | Small supporting text      | Gilroy         | Medium 500  | As written | 15    | 15     | 150 percent | None           |
-| Label      | Labels and buttons         | JetBrains Mono | Medium 500  | Capitals   | 12    | 12     | 16 pixels   | 0.14 em        |
-| Code       | Code and figures           | JetBrains Mono | Regular 400 | As written | 14    | 14     | 20 pixels   | None           |
+| Step        | Used for                   | Font           | Weight        | Shown in   | Phone | Laptop | Line height | Letter spacing |
+| ----------- | -------------------------- | -------------- | ------------- | ---------- | ----- | ------ | ----------- | -------------- |
+| Display     | The one big line of a page | Gilroy         | Heavy 950     | Capitals   | 54    | 98     | 92 percent  | -0.032 em      |
+| Title       | Page titles                | Gilroy         | Heavy 950     | Capitals   | 46    | 88     | 94 percent  | -0.032 em      |
+| Heading     | Section headings           | Gilroy         | Heavy 950     | Capitals   | 38    | 80     | 96 percent  | -0.032 em      |
+| Sub-heading | Block and card titles      | Gilroy         | ExtraBold 800 | As written | 24    | 24     | 120 percent | -0.02 em       |
+| Body        | Reading text               | Gilroy         | Medium 500    | As written | 16    | 18     | 160 percent | None           |
+| Note        | Small supporting text      | Gilroy         | Medium 500    | As written | 15    | 15     | 150 percent | None           |
+| Label       | Labels and buttons         | JetBrains Mono | Medium 500    | Capitals   | 12    | 12     | 16 pixels   | 0.14 em        |
+| Code        | Code and figures           | JetBrains Mono | Regular 400   | As written | 14    | 14     | 20 pixels   | None           |
 
 Sizes are in pixels. The phone is a screen 375 pixels wide, and the laptop is one 1440 pixels wide. Between the two a size grows evenly with the screen, and `getSize` gives the size for any width. No text is smaller than 12 pixels. A line of reading text is at least one and a half times its size, and a test holds that.
 
 Since v1.1.0 the scale follows the PCX website. Before, the headings were smaller, lighter and shown as written.
+
+Since v1.1.1 a sub-heading is shown as written again, in weight 800. At its size, the heaviest weight in capitals is hard to read.
 
 Not here: scales for slides, documents and print, and the rules for paragraphs.
 
