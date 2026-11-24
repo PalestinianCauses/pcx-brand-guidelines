@@ -1,6 +1,7 @@
 // The type scale of the PCX brand: eight steps, from the one big line of a
-// page down to code. The four headings and the label are shown in capitals.
-// Their words are still written in sentence case, and so is all other text.
+// page down to code. The three large headings and the label are shown in
+// capitals. Their words are still written in sentence case. A sub-heading
+// and all other text are shown as they are written.
 
 import type { FontID } from "./fonts";
 
@@ -76,15 +77,15 @@ const TYPE: Record<TypeStepID, TypeStep> = {
     isUppercase: true,
   },
   subheading: {
-    name: "Subheading",
+    name: "Sub-heading",
     use: "Block and card titles.",
     font: "sans",
-    weight: 950,
+    weight: 800,
     sizePhone: 24,
     sizeLaptop: 24,
-    leading: { value: 100, unit: "percent" },
+    leading: { value: 120, unit: "percent" },
     tracking: -0.02,
-    isUppercase: true,
+    isUppercase: false,
   },
   body: {
     name: "Body",
