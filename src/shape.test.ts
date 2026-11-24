@@ -4,6 +4,7 @@ import test from "node:test";
 import COLORS, { GROUND_DARK, GROUND_LIGHT } from "./colors";
 import getContrast, { CONTRAST_PARTS } from "./contrast";
 import SHAPE, { HEIGHT_FINGER, UNIT } from "./shape";
+import { getScaled, SCREEN_LAPTOP, SCREEN_PHONE } from "./type";
 
 test("the shape keeps its corners, lines, heights and spaces", () => {
   assert.deepEqual(SHAPE, {
@@ -12,11 +13,15 @@ test("the shape keeps its corners, lines, heights and spaces", () => {
     heightControl: 44,
     ringFocus: { width: 2, offset: 2, color: "#1f8bff" },
     spaces: {
-      inside: 20,
-      between: 0,
-      heading: 24,
+      inside: 24,
+      between: 16,
+      heading: 28,
+      sectionAbovePhone: 48,
+      sectionAboveLaptop: 96,
+      sectionBelowPhone: 56,
+      sectionBelowLaptop: 96,
       sectionPhone: 48,
-      sectionLaptop: 64,
+      sectionLaptop: 96,
     },
   });
 });
@@ -42,8 +47,43 @@ test("the thick line is twice the thin line", () => {
   assert.equal(SHAPE.lines.thick, SHAPE.lines.thin * 2);
 });
 
-test("a section gets more room on a laptop than on a phone", () => {
-  assert.ok(SHAPE.spaces.sectionLaptop > SHAPE.spaces.sectionPhone);
+test("a section gets more room on a laptop than on a phone, above and below", () => {
+  const { spaces } = SHAPE;
+
+  assert.ok(spaces.sectionAboveLaptop > spaces.sectionAbovePhone);
+  assert.ok(spaces.sectionBelowLaptop > spaces.sectionBelowPhone);
+});
+
+test("the room around a section grows evenly from the phone to the laptop", () => {
+  const { spaces } = SHAPE;
+  const screenMiddle = (SCREEN_PHONE + SCREEN_LAPTOP) / 2;
+
+  const above = getScaled(
+    spaces.sectionAbovePhone,
+    spaces.sectionAboveLaptop,
+    screenMiddle,
+  );
+
+  const below = getScaled(
+    spaces.sectionBelowPhone,
+    spaces.sectionBelowLaptop,
+    screenMiddle,
+  );
+
+  assert.equal(above, 72);
+  assert.equal(below, 76);
+});
+
+test("the two older names still hold the room above a section", () => {
+  const { spaces } = SHAPE;
+
+  assert.equal(spaces.sectionPhone, spaces.sectionAbovePhone);
+  assert.equal(spaces.sectionLaptop, spaces.sectionAboveLaptop);
+});
+
+test("two cards stand apart, and a card has more room inside than between", () => {
+  assert.ok(SHAPE.spaces.between > 0);
+  assert.ok(SHAPE.spaces.inside > SHAPE.spaces.between);
 });
 
 test("the focus ring is the brand's blue, and it shows on both grounds", () => {
