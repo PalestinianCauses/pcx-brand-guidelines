@@ -80,7 +80,7 @@ const TYPE: Record<TypeStepID, TypeStep> = {
     name: "Sub-heading",
     use: "Block and card titles.",
     font: "sans",
-    weight: 800,
+    weight: 700,
     sizePhone: 24,
     sizeLaptop: 24,
     leading: { value: 120, unit: "percent" },
