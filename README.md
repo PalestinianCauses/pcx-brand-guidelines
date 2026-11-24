@@ -82,6 +82,8 @@ Since v1.1.0 the scale follows the PCX website. Before, the headings were smalle
 
 Since v1.1.1 a sub-heading is shown as written again. At its size, the heaviest weight in capitals is hard to read. Since v1.1.2 it is in weight 700.
 
+Since v2.0.0 the key of that step is written with its hyphen, as its name is: `TYPE["sub-heading"]`. Before, the key was one word, without the hyphen. Code that reads the step by the older key moves to the new one. No value of the step changed.
+
 Not here: scales for slides, documents and print, and the rules for paragraphs.
 
 ## Shape, lines and spacing

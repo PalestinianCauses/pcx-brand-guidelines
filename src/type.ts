@@ -12,7 +12,7 @@ export type TypeStepID =
   | "heading"
   | "label"
   | "note"
-  | "subheading"
+  | "sub-heading"
   | "title";
 
 // The height of a line: a number of pixels, or a percentage of the size.
@@ -43,7 +43,7 @@ export const SIZE_LEAST = 12;
 // A size is in pixels: one for the phone and one for the laptop. The letter
 // spacing is a share of the size, the em of a style sheet.
 const TYPE: Record<TypeStepID, TypeStep> = {
-  display: {
+  "display": {
     name: "Display",
     use: "The one big line of a page.",
     font: "sans",
@@ -54,7 +54,7 @@ const TYPE: Record<TypeStepID, TypeStep> = {
     tracking: -0.032,
     isUppercase: true,
   },
-  title: {
+  "title": {
     name: "Title",
     use: "Page titles.",
     font: "sans",
@@ -65,7 +65,7 @@ const TYPE: Record<TypeStepID, TypeStep> = {
     tracking: -0.032,
     isUppercase: true,
   },
-  heading: {
+  "heading": {
     name: "Heading",
     use: "Section headings.",
     font: "sans",
@@ -76,7 +76,7 @@ const TYPE: Record<TypeStepID, TypeStep> = {
     tracking: -0.032,
     isUppercase: true,
   },
-  subheading: {
+  "sub-heading": {
     name: "Sub-heading",
     use: "Block and card titles.",
     font: "sans",
@@ -87,7 +87,7 @@ const TYPE: Record<TypeStepID, TypeStep> = {
     tracking: -0.02,
     isUppercase: false,
   },
-  body: {
+  "body": {
     name: "Body",
     use: "Reading text.",
     font: "sans",
@@ -98,7 +98,7 @@ const TYPE: Record<TypeStepID, TypeStep> = {
     tracking: 0,
     isUppercase: false,
   },
-  note: {
+  "note": {
     name: "Note",
     use: "Small supporting text.",
     font: "sans",
@@ -109,7 +109,7 @@ const TYPE: Record<TypeStepID, TypeStep> = {
     tracking: 0,
     isUppercase: false,
   },
-  label: {
+  "label": {
     name: "Label",
     use: "Labels and buttons.",
     font: "mono",
@@ -120,7 +120,7 @@ const TYPE: Record<TypeStepID, TypeStep> = {
     tracking: 0.14,
     isUppercase: true,
   },
-  code: {
+  "code": {
     name: "Code",
     use: "Code and figures.",
     font: "mono",
