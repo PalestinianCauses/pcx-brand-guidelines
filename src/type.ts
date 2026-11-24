@@ -1,6 +1,6 @@
 // The type scale of the PCX brand: eight steps, from the one big line of a
-// page down to code. Headings are in sentence case, and only the label is in
-// capitals.
+// page down to code. The four headings and the label are shown in capitals.
+// Their words are still written in sentence case, and so is all other text.
 
 import type { FontID } from "./fonts";
 
@@ -46,54 +46,54 @@ const TYPE: Record<TypeStepID, TypeStep> = {
     name: "Display",
     use: "The one big line of a page.",
     font: "sans",
-    weight: 800,
-    sizePhone: 44,
-    sizeLaptop: 96,
-    leading: { value: 100, unit: "percent" },
-    tracking: -0.04,
-    isUppercase: false,
+    weight: 950,
+    sizePhone: 54,
+    sizeLaptop: 98,
+    leading: { value: 92, unit: "percent" },
+    tracking: -0.032,
+    isUppercase: true,
   },
   title: {
     name: "Title",
     use: "Page titles.",
     font: "sans",
-    weight: 800,
-    sizePhone: 36,
-    sizeLaptop: 60,
-    leading: { value: 105, unit: "percent" },
-    tracking: -0.02,
-    isUppercase: false,
+    weight: 950,
+    sizePhone: 46,
+    sizeLaptop: 88,
+    leading: { value: 94, unit: "percent" },
+    tracking: -0.032,
+    isUppercase: true,
   },
   heading: {
     name: "Heading",
     use: "Section headings.",
     font: "sans",
-    weight: 800,
-    sizePhone: 28,
-    sizeLaptop: 40,
-    leading: { value: 115, unit: "percent" },
-    tracking: -0.02,
-    isUppercase: false,
+    weight: 950,
+    sizePhone: 38,
+    sizeLaptop: 80,
+    leading: { value: 96, unit: "percent" },
+    tracking: -0.032,
+    isUppercase: true,
   },
   subheading: {
     name: "Subheading",
     use: "Block and card titles.",
     font: "sans",
-    weight: 700,
-    sizePhone: 20,
+    weight: 950,
+    sizePhone: 24,
     sizeLaptop: 24,
-    leading: { value: 120, unit: "percent" },
-    tracking: 0,
-    isUppercase: false,
+    leading: { value: 100, unit: "percent" },
+    tracking: -0.02,
+    isUppercase: true,
   },
   body: {
     name: "Body",
     use: "Reading text.",
     font: "sans",
-    weight: 400,
-    sizePhone: 18,
+    weight: 500,
+    sizePhone: 16,
     sizeLaptop: 18,
-    leading: { value: 28, unit: "pixels" },
+    leading: { value: 160, unit: "percent" },
     tracking: 0,
     isUppercase: false,
   },
@@ -101,10 +101,10 @@ const TYPE: Record<TypeStepID, TypeStep> = {
     name: "Note",
     use: "Small supporting text.",
     font: "sans",
-    weight: 400,
-    sizePhone: 14,
-    sizeLaptop: 14,
-    leading: { value: 20, unit: "pixels" },
+    weight: 500,
+    sizePhone: 15,
+    sizeLaptop: 15,
+    leading: { value: 150, unit: "percent" },
     tracking: 0,
     isUppercase: false,
   },
@@ -116,7 +116,7 @@ const TYPE: Record<TypeStepID, TypeStep> = {
     sizePhone: 12,
     sizeLaptop: 12,
     leading: { value: 16, unit: "pixels" },
-    tracking: 0.12,
+    tracking: 0.14,
     isUppercase: true,
   },
   code: {
@@ -132,15 +132,24 @@ const TYPE: Record<TypeStepID, TypeStep> = {
   },
 };
 
-// The size of a step on a screen of a given width, in pixels. Between the
-// phone and the laptop the size grows evenly with the screen. Under the
-// phone and over the laptop it stays as it is.
-export const getSize = function getSize(step: TypeStep, width: number): number {
+// A value on a screen of a given width, from its value on a phone and its
+// value on a laptop. Between the two the value grows evenly with the screen.
+// Under the phone and over the laptop it stays as it is.
+export const getScaled = function getScaled(
+  phone: number,
+  laptop: number,
+  width: number,
+): number {
   const share = (width - SCREEN_PHONE) / (SCREEN_LAPTOP - SCREEN_PHONE);
   const shareBounded = Math.min(1, Math.max(0, share));
-  const size =
-    step.sizePhone + (step.sizeLaptop - step.sizePhone) * shareBounded;
+  const value = phone + (laptop - phone) * shareBounded;
 
+  return value;
+};
+
+// The size of a step on a screen of a given width, in pixels.
+export const getSize = function getSize(step: TypeStep, width: number): number {
+  const size = getScaled(step.sizePhone, step.sizeLaptop, width);
   return size;
 };
 

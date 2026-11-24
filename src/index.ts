@@ -24,7 +24,13 @@ import MOTION, {
 import SHAPE, { HEIGHT_FINGER, UNIT } from "./shape";
 import STORY from "./story";
 import STRATEGY from "./strategy";
-import TYPE, { getSize, SCREEN_LAPTOP, SCREEN_PHONE, SIZE_LEAST } from "./type";
+import TYPE, {
+  getScaled,
+  getSize,
+  SCREEN_LAPTOP,
+  SCREEN_PHONE,
+  SIZE_LEAST,
+} from "./type";
 import VOICE, { WORDS_HYPE } from "./voice";
 
 export type { Color, ColorID } from "./colors";
@@ -46,6 +52,7 @@ export {
   getContrast,
   getEntranceTime,
   getLuminance,
+  getScaled,
   getSize,
   GROUND_DARK,
   GROUND_LIGHT,
