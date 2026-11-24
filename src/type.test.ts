@@ -48,7 +48,7 @@ test("the eight steps keep their fonts, weights, sizes and line heights", () => 
     display: ["sans", 950, 54, 98, 92, "percent", -0.032, true],
     title: ["sans", 950, 46, 88, 94, "percent", -0.032, true],
     heading: ["sans", 950, 38, 80, 96, "percent", -0.032, true],
-    subheading: ["sans", 800, 24, 24, 120, "percent", -0.02, false],
+    subheading: ["sans", 700, 24, 24, 120, "percent", -0.02, false],
     body: ["sans", 500, 16, 18, 160, "percent", 0, false],
     note: ["sans", 500, 15, 15, 150, "percent", 0, false],
     label: ["mono", 500, 12, 12, 16, "pixels", 0.14, true],
@@ -119,7 +119,7 @@ test("a sub-heading is shown as written, and lighter than a large heading", () =
   const { subheading } = TYPE;
 
   assert.equal(subheading.isUppercase, false);
-  assert.equal(subheading.weight, 800);
+  assert.equal(subheading.weight, 700);
 
   STEPS_HEADING.forEach((id) => {
     assert.ok(subheading.weight < TYPE[id].weight, id);
