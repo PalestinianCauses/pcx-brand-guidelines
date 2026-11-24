@@ -47,6 +47,18 @@ const getContrast = function getContrast(
   return contrast;
 };
 
+// The tenths of a contrast: the greatest whole number of tenths that is not
+// more than the contrast. The first guess can be one off in either direction,
+// because a product of two numbers is not exact. So the three numbers around
+// it are compared with the contrast itself.
+const getTenths = function getTenths(contrast: number): number {
+  const guess = Math.floor(contrast * 10);
+  const candidates = [guess + 1, guess, guess - 1];
+  const tenths = candidates.find((candidate) => candidate / 10 <= contrast);
+
+  return tenths ?? guess - 1;
+};
+
 // A contrast as a person reads it: with one digit after the point, rounded
 // down to the nearest one that ends in an even digit or in 5. It is rounded
 // down and never up, so the shown contrast is never more than the measured
@@ -55,7 +67,7 @@ const getContrast = function getContrast(
 export const getContrastShown = function getContrastShown(
   contrast: number,
 ): string {
-  const tenths = Math.floor(Number((contrast * 10).toFixed(6)));
+  const tenths = getTenths(contrast);
   const tenthsShown = ENDINGS.includes(tenths % 10) ? tenths : tenths - 1;
   const shown = (tenthsShown / 10).toFixed(1);
 

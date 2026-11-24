@@ -97,8 +97,34 @@ test("a shown contrast is never more than the measured one, and at most two tent
   CONTRASTS.forEach((contrast) => {
     const shown = Number(getContrastShown(contrast));
 
-    assert.ok(shown <= contrast + 0.000001, `${contrast}`);
+    assert.ok(shown <= contrast, `${contrast}`);
     assert.ok(contrast - shown < 0.2, `${contrast}`);
+  });
+});
+
+test("a contrast just under a limit is not shown as reaching it", () => {
+  const contrasts = [4.49999998, 2.99999998, 4.499999999999999, 6.999999];
+  const shown = contrasts.map(getContrastShown);
+
+  assert.deepEqual(shown, ["4.4", "2.8", "4.4", "6.8"]);
+
+  contrasts.forEach((contrast, index) => {
+    assert.ok(Number(shown[index]) <= contrast, `${contrast}`);
+  });
+});
+
+test("a contrast that is a whole number of tenths is shown as it is", () => {
+  const tenths = Array.from({ length: 201 }, (_, index) => index + 10);
+  const tenthsAllowed = tenths.filter(
+    (value) => ![1, 3, 7, 9].includes(value % 10),
+  );
+
+  tenthsAllowed.forEach((value) => {
+    assert.equal(
+      getContrastShown(value / 10),
+      (value / 10).toFixed(1),
+      `${value}`,
+    );
   });
 });
 
