@@ -6,6 +6,7 @@ import COLORS, { GROUND_DARK, GROUND_LIGHT, SLATE } from "./colors";
 import getContrast, {
   CONTRAST_PARTS,
   CONTRAST_WORDS,
+  getContrastShown,
   getLuminance,
 } from "./contrast";
 import FONTS, { ENDINGS_FONT } from "./fonts";
@@ -50,6 +51,7 @@ export {
   FILE_LOGO,
   FONTS,
   getContrast,
+  getContrastShown,
   getEntranceTime,
   getLuminance,
   getScaled,

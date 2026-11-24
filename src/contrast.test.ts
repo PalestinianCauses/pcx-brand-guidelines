@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import getContrast, { CONTRAST_WORDS, getLuminance } from "./contrast";
+import COLORS, { SLATE } from "./colors";
+import getContrast, {
+  CONTRAST_PARTS,
+  CONTRAST_WORDS,
+  getContrastShown,
+  getLuminance,
+} from "./contrast";
 
 const WHITE = "#ffffff";
 const BLACK = "#000000";
@@ -35,4 +41,85 @@ test("a value that is not a hex colour with six digits is refused", () => {
   assert.throws(() => getLuminance("#fff"), /not a hex colour/);
   assert.throws(() => getLuminance("blue"), /not a hex colour/);
   assert.throws(() => getContrast(WHITE, "#12345g"), /not a hex colour/);
+});
+
+// Every colour of the brand, and white and black.
+const COLORS_ALL: string[] = [
+  ...Object.values(SLATE),
+  ...Object.values(COLORS).map((color) => color.value),
+  WHITE,
+  BLACK,
+];
+
+// The contrast of every colour on every other one.
+const CONTRASTS = COLORS_ALL.flatMap((colorOne) =>
+  COLORS_ALL.map((colorTwo) => getContrast(colorOne, colorTwo)),
+);
+
+// The last digits that a shown contrast may never end in.
+const PATTERN_ODD = /[1379]$/;
+
+test("a contrast is shown rounded down to one digit that is even or 5", () => {
+  const shown = [9.33, 14.57, 4.55, 4.49, 2.91, 3.24, 20.16, 4.6, 7.19].map(
+    getContrastShown,
+  );
+
+  assert.deepEqual(shown, [
+    "9.2",
+    "14.5",
+    "4.5",
+    "4.4",
+    "2.8",
+    "3.2",
+    "20.0",
+    "4.6",
+    "7.0",
+  ]);
+});
+
+test("a whole contrast keeps its digit after the point, so it never ends in an odd digit", () => {
+  assert.equal(getContrastShown(3), "3.0");
+  assert.equal(getContrastShown(1), "1.0");
+  assert.equal(getContrastShown(21), "21.0");
+  assert.equal(getContrastShown(getContrast(WHITE, BLACK)), "21.0");
+});
+
+test("no shown contrast ends in an odd digit other than 5", () => {
+  const contrastsOdd = CONTRASTS.map(getContrastShown).filter((shown) =>
+    PATTERN_ODD.test(shown),
+  );
+
+  assert.ok(CONTRASTS.length > 200);
+  assert.deepEqual(contrastsOdd, []);
+});
+
+test("a shown contrast is never more than the measured one, and at most two tenths less", () => {
+  CONTRASTS.forEach((contrast) => {
+    const shown = Number(getContrastShown(contrast));
+
+    assert.ok(shown <= contrast + 0.000001, `${contrast}`);
+    assert.ok(contrast - shown < 0.2, `${contrast}`);
+  });
+});
+
+test("a shown contrast reaches a limit exactly when the measured one does", () => {
+  CONTRASTS.forEach((contrast) => {
+    const shown = Number(getContrastShown(contrast));
+
+    assert.equal(
+      shown >= CONTRAST_WORDS,
+      contrast >= CONTRAST_WORDS,
+      `${contrast}`,
+    );
+    assert.equal(
+      shown >= CONTRAST_PARTS,
+      contrast >= CONTRAST_PARTS,
+      `${contrast}`,
+    );
+  });
+
+  assert.equal(getContrastShown(CONTRAST_WORDS), "4.5");
+  assert.equal(getContrastShown(CONTRAST_PARTS), "3.0");
+  assert.equal(getContrastShown(CONTRAST_WORDS - 0.01), "4.4");
+  assert.equal(getContrastShown(CONTRAST_PARTS - 0.01), "2.8");
 });

@@ -8,6 +8,9 @@ export const CONTRAST_WORDS = 4.5;
 // the line around a field: level AA of WCAG 2.
 export const CONTRAST_PARTS = 3;
 
+// The digits that a shown contrast may end in: an even digit, or 5.
+const ENDINGS = [0, 2, 4, 5, 6, 8];
+
 const PATTERN_COLOR = /^#[0-9a-f]{6}$/i;
 const PATTERN_PAIR = /[0-9a-f]{2}/gi;
 
@@ -42,6 +45,21 @@ const getContrast = function getContrast(
   const contrast = (lighter + 0.05) / (darker + 0.05);
 
   return contrast;
+};
+
+// A contrast as a person reads it: with one digit after the point, rounded
+// down to the nearest one that ends in an even digit or in 5. It is rounded
+// down and never up, so the shown contrast is never more than the measured
+// one. Both limits lie on that grid, so a shown contrast reaches a limit
+// exactly when the measured one does.
+export const getContrastShown = function getContrastShown(
+  contrast: number,
+): string {
+  const tenths = Math.floor(Number((contrast * 10).toFixed(6)));
+  const tenthsShown = ENDINGS.includes(tenths % 10) ? tenths : tenths - 1;
+  const shown = (tenthsShown / 10).toFixed(1);
+
+  return shown;
 };
 
 export default getContrast;
