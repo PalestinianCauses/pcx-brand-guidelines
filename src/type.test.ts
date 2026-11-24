@@ -22,7 +22,7 @@ const STEPS_SANS: TypeStepID[] = [
   "display",
   "title",
   "heading",
-  "subheading",
+  "sub-heading",
   "body",
   "note",
 ];
@@ -45,14 +45,14 @@ test("the eight steps keep their fonts, weights, sizes and line heights", () => 
   );
 
   assert.deepEqual(steps, {
-    display: ["sans", 950, 54, 98, 92, "percent", -0.032, true],
-    title: ["sans", 950, 46, 88, 94, "percent", -0.032, true],
-    heading: ["sans", 950, 38, 80, 96, "percent", -0.032, true],
-    subheading: ["sans", 700, 24, 24, 120, "percent", -0.02, false],
-    body: ["sans", 500, 16, 18, 160, "percent", 0, false],
-    note: ["sans", 500, 15, 15, 150, "percent", 0, false],
-    label: ["mono", 500, 12, 12, 16, "pixels", 0.14, true],
-    code: ["mono", 400, 14, 14, 20, "pixels", 0, false],
+    "display": ["sans", 950, 54, 98, 92, "percent", -0.032, true],
+    "title": ["sans", 950, 46, 88, 94, "percent", -0.032, true],
+    "heading": ["sans", 950, 38, 80, 96, "percent", -0.032, true],
+    "sub-heading": ["sans", 700, 24, 24, 120, "percent", -0.02, false],
+    "body": ["sans", 500, 16, 18, 160, "percent", 0, false],
+    "note": ["sans", 500, 15, 15, 150, "percent", 0, false],
+    "label": ["mono", 500, 12, 12, 16, "pixels", 0.14, true],
+    "code": ["mono", 400, 14, 14, 20, "pixels", 0, false],
   });
 });
 
@@ -62,14 +62,14 @@ test("every step keeps its name and says what it is used for", () => {
   );
 
   assert.deepEqual(words, {
-    display: ["Display", "The one big line of a page."],
-    title: ["Title", "Page titles."],
-    heading: ["Heading", "Section headings."],
-    subheading: ["Sub-heading", "Block and card titles."],
-    body: ["Body", "Reading text."],
-    note: ["Note", "Small supporting text."],
-    label: ["Label", "Labels and buttons."],
-    code: ["Code", "Code and figures."],
+    "display": ["Display", "The one big line of a page."],
+    "title": ["Title", "Page titles."],
+    "heading": ["Heading", "Section headings."],
+    "sub-heading": ["Sub-heading", "Block and card titles."],
+    "body": ["Body", "Reading text."],
+    "note": ["Note", "Small supporting text."],
+    "label": ["Label", "Labels and buttons."],
+    "code": ["Code", "Code and figures."],
   });
 });
 
@@ -116,16 +116,22 @@ test("every large heading is set in the heaviest weight of Gilroy", () => {
 });
 
 test("a sub-heading is shown as written, and lighter than a large heading", () => {
-  const { subheading } = TYPE;
+  const step = TYPE["sub-heading"];
 
-  assert.equal(subheading.isUppercase, false);
-  assert.equal(subheading.weight, 700);
+  assert.equal(step.isUppercase, false);
+  assert.equal(step.weight, 700);
 
   STEPS_HEADING.forEach((id) => {
-    assert.ok(subheading.weight < TYPE[id].weight, id);
+    assert.ok(step.weight < TYPE[id].weight, id);
   });
 
-  assert.ok(subheading.weight > TYPE.body.weight);
+  assert.ok(step.weight > TYPE.body.weight);
+});
+
+test("the key of every step is written as its name is", () => {
+  Object.entries(TYPE).forEach(([id, step]) => {
+    assert.equal(id, step.name.toLowerCase(), id);
+  });
 });
 
 test("a line of reading text is at least one and a half times its size", () => {
