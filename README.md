@@ -17,6 +17,7 @@ The parts arrive one at a time:
 | Shape, lines and spacing  | Available |
 | Motion                    | Available |
 | Story, strategy and voice | Available |
+| The look                  | Available |
 
 ## Colours
 
@@ -144,6 +145,21 @@ The positioning is one line: "Digital systems built to perform beyond launch."
 The brand's own words follow the voice. Tests prove that they use none of the 43 words the voice leaves out, that they carry no exclamation mark, and that most of their sentences stay under 15 words.
 
 Not here: a guide on how to use the guidelines as a whole, and the rules of writing beyond the voice.
+
+## The look
+
+One file, `src/look.ts`, says what PCX looks like as a whole. The other chapters hold values, such as a colour or a weight. This one holds the rules that those values follow.
+
+| Part              | What it holds                                                                             |
+| ----------------- | ----------------------------------------------------------------------------------------- |
+| The traits        | For each of the four traits of the personality, the rules of the look that follow from it |
+| The grounds       | Their order: mostly dark, then light, then a brand colour                                 |
+| The relatives     | What the look is close to, what it is not, and what is its own                            |
+| The illustrations | What an illustration is: it has a meaning, and it is made by rules                        |
+
+The traits of the look are the traits of the personality in `src/strategy.ts`, in the same order. A test holds every line, so a line changes only on purpose. Other tests tie a line to the value that it names: the weight of the large type, and the square corner.
+
+Not here: how PCX speaks and writes, which belongs to a system for copywriting and proofreading. Not here yet: how the four brand colours are used on a page, and the rules for drawing an illustration.
 
 ## How to install it
 
