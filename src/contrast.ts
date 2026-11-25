@@ -23,11 +23,18 @@ const getChannel = function getChannel(pair: string): number {
   return channel;
 };
 
-export const getLuminance = function getLuminance(color: string): number {
+// The three channels of a colour, each as its linear value: red, green and
+// blue.
+export const getChannels = function getChannels(color: string): number[] {
   if (!PATTERN_COLOR.test(color))
     throw new Error(`"${color}" is not a hex colour with six digits.`);
 
-  const [red, green, blue] = (color.match(PATTERN_PAIR) || []).map(getChannel);
+  const channels = (color.match(PATTERN_PAIR) || []).map(getChannel);
+  return channels;
+};
+
+export const getLuminance = function getLuminance(color: string): number {
+  const [red, green, blue] = getChannels(color);
   const luminance = 0.2126 * red + 0.7152 * green + 0.0722 * blue;
 
   return luminance;
