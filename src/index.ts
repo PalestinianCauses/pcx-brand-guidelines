@@ -16,6 +16,7 @@ import LOGO, {
   MISUSES_LOGO,
   PRINCIPLES_LOGO,
 } from "./logo";
+import LOOK, { GROUNDS_ORDER } from "./look";
 import MOTION, {
   getEntranceTime,
   MOTION_REDUCED,
@@ -37,6 +38,7 @@ import VOICE, { WORDS_HYPE } from "./voice";
 export type { Color, ColorID } from "./colors";
 export type { Font, FontID, FontWeight } from "./fonts";
 export type { LogoRule } from "./logo";
+export type { GroundsKind, TraitLook } from "./look";
 export type { StoryID, StoryPart, StoryQuote } from "./story";
 export type { Offer, StrategyPoint } from "./strategy";
 export type { Leading, TypeStep, TypeStepID } from "./type";
@@ -58,8 +60,10 @@ export {
   getSize,
   GROUND_DARK,
   GROUND_LIGHT,
+  GROUNDS_ORDER,
   HEIGHT_FINGER,
   LOGO,
+  LOOK,
   MISUSES_LOGO,
   MOTION,
   MOTION_REDUCED,
