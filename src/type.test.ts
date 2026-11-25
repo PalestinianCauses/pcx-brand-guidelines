@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import FONTS from "./fonts";
+import SHAPE from "./shape";
 import TYPE, {
   getScaled,
   getSize,
@@ -17,7 +18,8 @@ const STEPS_HEADING: TypeStepID[] = ["display", "title", "heading"];
 // The least line height of reading text, as a percentage of its size.
 const LEADING_LEAST = 150;
 
-// The steps set in Gilroy, from the largest to the smallest.
+// The steps of headings and of reading text, from the largest to the
+// smallest. All are set in Gilroy.
 const STEPS_SANS: TypeStepID[] = [
   "display",
   "title",
@@ -27,7 +29,7 @@ const STEPS_SANS: TypeStepID[] = [
   "note",
 ];
 
-test("the eight steps keep their fonts, weights, sizes and line heights", () => {
+test("the nine steps keep their fonts, weights, sizes and line heights", () => {
   const steps = Object.fromEntries(
     Object.entries(TYPE).map(([id, step]) => [
       id,
@@ -51,6 +53,7 @@ test("the eight steps keep their fonts, weights, sizes and line heights", () => 
     "sub-heading": ["sans", 700, 24, 24, 120, "percent", -0.02, false],
     "body": ["sans", 500, 16, 18, 160, "percent", 0, false],
     "note": ["sans", 500, 15, 15, 150, "percent", 0, false],
+    "button": ["sans", 600, 15, 15, 20, "pixels", 0, false],
     "label": ["mono", 500, 12, 12, 16, "pixels", 0.14, true],
     "code": ["mono", 400, 14, 14, 20, "pixels", 0, false],
   });
@@ -68,7 +71,8 @@ test("every step keeps its name and says what it is used for", () => {
     "sub-heading": ["Sub-heading", "Block and card titles."],
     "body": ["Body", "Reading text."],
     "note": ["Note", "Small supporting text."],
-    "label": ["Label", "Labels and buttons."],
+    "button": ["Button", "The words of a button."],
+    "label": ["Label", "Small labels."],
     "code": ["Code", "Code and figures."],
   });
 });
@@ -88,7 +92,7 @@ test("no step is smaller than the least size, and none shrinks on a laptop", () 
   });
 });
 
-test("the steps in Gilroy run from the largest to the smallest", () => {
+test("the steps of headings and of reading text run from the largest to the smallest", () => {
   STEPS_SANS.slice(1).forEach((id, index) => {
     const stepLarger = TYPE[STEPS_SANS[index]];
     const step = TYPE[id];
@@ -126,6 +130,34 @@ test("a sub-heading is shown as written, and lighter than a large heading", () =
   });
 
   assert.ok(step.weight > TYPE.body.weight);
+});
+
+test("the words of a button are shown as written, in Gilroy, between reading text and a sub-heading in weight", () => {
+  const step = TYPE.button;
+
+  assert.equal(step.font, "sans");
+  assert.equal(step.isUppercase, false);
+  assert.equal(step.tracking, 0);
+  assert.ok(step.weight > TYPE.body.weight);
+  assert.ok(step.weight < TYPE["sub-heading"].weight);
+});
+
+test("the words of a button are as large as a note on every screen, and one line of them fits a button", () => {
+  const step = TYPE.button;
+
+  assert.equal(step.sizePhone, TYPE.note.sizePhone);
+  assert.equal(step.sizeLaptop, step.sizePhone);
+  assert.equal(step.leading.unit, "pixels");
+  assert.ok(step.leading.value > step.sizePhone);
+  assert.ok(step.leading.value < SHAPE.heightControl);
+});
+
+test("the label is for small labels: it is the smallest step, and no button uses it", () => {
+  const sizes = Object.values(TYPE).map((step) => step.sizePhone);
+
+  assert.equal(TYPE.label.sizePhone, Math.min(...sizes));
+  assert.equal(TYPE.label.use, "Small labels.");
+  assert.ok(!TYPE.label.use.toLowerCase().includes("button"));
 });
 
 test("the key of every step is written as its name is", () => {
