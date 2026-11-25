@@ -45,19 +45,21 @@ A brand colour itself does not change. It is one step of its own scale: purple 9
 
 | Step | Purple    | Blue      | Pink      | Yellow    | Words |
 | ---- | --------- | --------- | --------- | --------- | ----- |
-| 50   | `#f0f0ff` | `#eaf3ff` | `#feecf2` | `#fff2c7` | Ink   |
-| 100  | `#e1e2ff` | `#d4e7ff` | `#ffd9e6` | `#ffd84d` | Ink   |
-| 200  | `#cbcbff` | `#b3d4ff` | `#ffbad3` | `#f4ce40` | Ink   |
+| 50   | `#f0f0ff` | `#e9f3ff` | `#ffecf2` | `#fff2c6` | Ink   |
+| 100  | `#e1e1ff` | `#d4e7ff` | `#ffd9e6` | `#ffd84d` | Ink   |
+| 200  | `#cbcbff` | `#b2d4ff` | `#ffbad3` | `#f4ce40` | Ink   |
 | 300  | `#b6b4ff` | `#90c1ff` | `#ff99c1` | `#e1ba21` | Ink   |
 | 400  | `#9c96f9` | `#60a7ff` | `#ff4fa3` | `#c4a100` | Ink   |
 | 500  | `#857edd` | `#1f8bff` | `#eb3a92` | `#a88900` | Ink   |
-| 600  | `#6e65c3` | `#0172dc` | `#ce117a` | `#8c7200` | White |
-| 700  | `#584da8` | `#005cb3` | `#a90162` | `#715b01` | White |
-| 800  | `#43368f` | `#00468c` | `#84004c` | `#574601` | White |
-| 900  | `#2e1a72` | `#003267` | `#600036` | `#3e3100` | White |
-| 950  | `#1b0052` | `#001a3b` | `#37001c` | `#221a00` | White |
+| 600  | `#6e65c3` | `#0072dc` | `#ce117a` | `#8c7200` | White |
+| 700  | `#584da8` | `#005cb3` | `#a90062` | `#715b00` | White |
+| 800  | `#43368f` | `#00468c` | `#84004c` | `#574600` | White |
+| 900  | `#2e1a72` | `#003267` | `#610036` | `#3e3100` | White |
+| 950  | `#1b0052` | `#001a3c` | `#37001c` | `#221a00` | White |
 
 One rule gives the words on a step, in all four scales: a step of 600 or darker takes white words, and a lighter step takes ink words, in the darkest grey. `getWords` gives that colour. A test measures every step of every scale, and each reaches 4.5.
+
+The rule is for the four brand scales. `getWordsOn` gives the words on any colour by measure: white or ink, whichever stands out more. One of the two always reaches 4.5. On every step of the four scales, the measure and the rule give the same colour.
 
 The measure allows ink words on the blue and on the pink themselves, but small words are hard to read there. So a small part, such as a button or a badge, takes blue 600 or pink 600 with white words.
 

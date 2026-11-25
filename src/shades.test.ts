@@ -9,6 +9,7 @@ import SHADES, {
   getShades,
   getStep,
   getWords,
+  getWordsOn,
   LIGHTNESS_SHADE,
   type ShadeStep,
   STEP_WHITE,
@@ -23,7 +24,7 @@ const IDS = Object.keys(COLORS) as ColorID[];
 const VALUES: Record<ColorID, Record<ShadeStep, string>> = {
   purple: {
     50: "#f0f0ff",
-    100: "#e1e2ff",
+    100: "#e1e1ff",
     200: "#cbcbff",
     300: "#b6b4ff",
     400: "#9c96f9",
@@ -35,41 +36,41 @@ const VALUES: Record<ColorID, Record<ShadeStep, string>> = {
     950: "#1b0052",
   },
   blue: {
-    50: "#eaf3ff",
+    50: "#e9f3ff",
     100: "#d4e7ff",
-    200: "#b3d4ff",
+    200: "#b2d4ff",
     300: "#90c1ff",
     400: "#60a7ff",
     500: "#1f8bff",
-    600: "#0172dc",
+    600: "#0072dc",
     700: "#005cb3",
     800: "#00468c",
     900: "#003267",
-    950: "#001a3b",
+    950: "#001a3c",
   },
   pink: {
-    50: "#feecf2",
+    50: "#ffecf2",
     100: "#ffd9e6",
     200: "#ffbad3",
     300: "#ff99c1",
     400: "#ff4fa3",
     500: "#eb3a92",
     600: "#ce117a",
-    700: "#a90162",
+    700: "#a90062",
     800: "#84004c",
-    900: "#600036",
+    900: "#610036",
     950: "#37001c",
   },
   yellow: {
-    50: "#fff2c7",
+    50: "#fff2c6",
     100: "#ffd84d",
     200: "#f4ce40",
     300: "#e1ba21",
     400: "#c4a100",
     500: "#a88900",
     600: "#8c7200",
-    700: "#715b01",
-    800: "#574601",
+    700: "#715b00",
+    800: "#574600",
     900: "#3e3100",
     950: "#221a00",
   },
@@ -92,8 +93,20 @@ const STEPS_BRAND: Record<ColorID, ShadeStep> = {
 // hue of its colour. A hex value has 256 steps for each channel, so a made
 // colour is a little off.
 const ROOM_LIGHTNESS = 0.005;
-const ROOM_HUE = 2;
+const ROOM_HUE = 4;
 const ROOM_CHROMA = 0.002;
+
+// A grey that is no brand colour. It sits at a step that takes white words
+// by the rule, and white words can't be read on it.
+const GREY = "#808080";
+
+// Every grey from black to white, in steps of 5 of 255.
+const GREYS = Array.from({ length: 52 }, (_, index) => {
+  const pair = (index * 5).toString(16).padStart(2, "0");
+  const grey = `#${pair}${pair}${pair}`;
+
+  return grey;
+});
 
 // Every step of every scale, with its colour and its place.
 const getAll = function getAll(): [ColorID, ShadeStep, string][] {
@@ -225,6 +238,30 @@ test("the rule can't start one step lighter: white words fail on a step of 500",
 
     assert.ok(contrast < CONTRAST_WORDS, `${id}: ${contrast}`);
   });
+});
+
+test("on every step of the four scales, the measure gives the words that the rule gives", () => {
+  getAll().forEach(([id, step, value]) => {
+    assert.equal(getWordsOn(value), getWords(step), `${id} ${step}`);
+  });
+});
+
+test("the words on any colour reach the contrast that small words need, by measure", () => {
+  [...GREYS, ...Object.values(SLATE)].forEach((color) => {
+    const contrast = getContrast(getWordsOn(color), color);
+
+    assert.ok(contrast >= CONTRAST_WORDS, `${color}: ${contrast}`);
+  });
+});
+
+test("the rule is for the brand scales: on the scale of a grey, only the measure gives words that can be read", () => {
+  const step = getStep(GREY);
+
+  assert.equal(getShades(GREY)[step], GREY);
+  assert.equal(getWords(step), WORDS_WHITE);
+  assert.ok(getContrast(getWords(step), GREY) < CONTRAST_WORDS);
+  assert.equal(getWordsOn(GREY), WORDS_INK);
+  assert.ok(getContrast(getWordsOn(GREY), GREY) >= CONTRAST_WORDS);
 });
 
 test("the scale of a colour is made the same way for a colour that is no brand colour", () => {

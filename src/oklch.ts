@@ -22,10 +22,10 @@ export type Oklch = {
 const DEGREES_HALF = 180;
 const DEGREES_TURN = 360;
 
-// How many times the strength of a colour is lowered, at most, until a
-// screen can show it. The last time leaves a grey, which a screen can
-// always show.
-const CUTS = 200;
+// How many times the room for the strength of a colour is halved, to find
+// the most strength that a screen can show. After that many halvings the
+// room is far smaller than one step of a hex value.
+const HALVINGS = 24;
 
 // How far under 0 or over 1 a channel may lie and still count as a colour
 // of the screen. The conversion is not exact, so white itself can come out
@@ -111,15 +111,33 @@ const getPair = function getPair(linear: number): string {
   return pair;
 };
 
+// The most strength, up to its own, that a colour can have on a screen. A
+// colour that a screen can show keeps all of it. For another colour the
+// room between no strength and its own is halved again and again, and the
+// lower end of the room is always a colour of the screen.
+const getChroma = function getChroma(oklch: Oklch): number {
+  if (isShown(getLinears(oklch))) return oklch.chroma;
+
+  const [chroma] = Array.from({ length: HALVINGS }).reduce<number[]>(
+    ([low, high]) => {
+      const middle = (low + high) / 2;
+      const room = isShown(getLinears({ ...oklch, chroma: middle }))
+        ? [middle, high]
+        : [low, middle];
+
+      return room;
+    },
+    [0, oklch.chroma],
+  );
+
+  return chroma;
+};
+
 // A colour in OKLCH as a hex value. A colour that a screen can't show keeps
 // its lightness and its hue, and it loses strength until a screen can show
 // it.
 const getColor = function getColor(oklch: Oklch): string {
-  const candidates = Array.from({ length: CUTS + 1 }, (_, index) =>
-    getLinears({ ...oklch, chroma: (oklch.chroma * (CUTS - index)) / CUTS }),
-  );
-
-  const linears = candidates.find(isShown) || candidates[CUTS];
+  const linears = getLinears({ ...oklch, chroma: getChroma(oklch) });
   const color = ["#", ...linears.map(getPair)].join("");
 
   return color;

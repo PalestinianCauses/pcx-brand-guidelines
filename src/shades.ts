@@ -8,6 +8,7 @@
 // strength as a screen can show. A test holds every value.
 
 import COLORS, { type ColorID, SLATE } from "./colors";
+import getContrast from "./contrast";
 import getColor, { getOklch } from "./oklch";
 
 export type ShadeStep =
@@ -58,7 +59,10 @@ export const getStep = function getStep(color: string): ShadeStep {
   return step;
 };
 
-// The scale of a colour. The colour keeps its own value at its own step.
+// The scale of a colour. The colour keeps its own value at its own step. So
+// that one step can be lighter or darker than its place in the scale, and
+// the words on the scale of a colour that is no brand colour are measured
+// with `getWordsOn`.
 export const getShades = function getShades(color: string): Shades {
   const { chroma, hue } = getOklch(color);
   const stepOwn = getStep(color);
@@ -74,10 +78,24 @@ export const getShades = function getShades(color: string): Shades {
   return shades;
 };
 
-// The colour of the words on a step, in every scale: white on a step of
-// 600 or darker, and ink on a lighter one.
+// The colour of the words on a step of a brand colour's scale: white on a
+// step of 600 or darker, and ink on a lighter one. A test measures every
+// step of the four scales.
 export const getWords = function getWords(step: ShadeStep): string {
   const words = step >= STEP_WHITE ? WORDS_WHITE : WORDS_INK;
+  return words;
+};
+
+// The colour of the words on any colour, by measure: white or ink,
+// whichever stands out more. One of the two always reaches the contrast
+// that small words need. On every step of the four brand scales it is the
+// colour that `getWords` gives.
+export const getWordsOn = function getWordsOn(color: string): string {
+  const words =
+    getContrast(WORDS_WHITE, color) >= getContrast(WORDS_INK, color)
+      ? WORDS_WHITE
+      : WORDS_INK;
+
   return words;
 };
 
