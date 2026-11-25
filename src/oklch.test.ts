@@ -17,6 +17,11 @@ const ROOM_GREY = 0.0005;
 // A light tint that asks for more strength than a screen can show.
 const LIGHTNESS_TINT = 0.96;
 
+// A colour that asks for far more strength than any screen has, and the
+// least strength that it has to keep.
+const COLOR_WILD = { lightness: 0.5, chroma: 100, hue: 0 };
+const CHROMA_KEPT = 0.15;
+
 const COLORS_BRAND = Object.values(COLORS).map((color) => color.value);
 const GREYS: string[] = Object.values(SLATE);
 
@@ -68,6 +73,13 @@ test("a colour that a screen can't show keeps its lightness and its hue, and los
     assert.ok(tint.chroma < chroma, color);
     assert.ok(tint.chroma > 0, color);
   });
+});
+
+test("a colour that asks for far too much strength keeps the most that a screen can show", () => {
+  const shown = getOklch(getColor(COLOR_WILD));
+
+  assert.ok(shown.chroma > CHROMA_KEPT);
+  assert.ok(Math.abs(shown.lightness - COLOR_WILD.lightness) < ROOM_LIGHTNESS);
 });
 
 test("a colour with no strength is a grey", () => {
