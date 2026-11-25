@@ -17,12 +17,23 @@ import LOGO, {
   PRINCIPLES_LOGO,
 } from "./logo";
 import LOOK, { GROUNDS_ORDER } from "./look";
+import getColor, { getOklch } from "./oklch";
 import MOTION, {
   getEntranceTime,
   MOTION_REDUCED,
   TIME_FLOW,
   TIME_INSTANT,
 } from "./motion";
+import SHADES, {
+  getShades,
+  getStep,
+  getWords,
+  LIGHTNESS_SHADE,
+  STEP_WHITE,
+  STEPS_SHADE,
+  WORDS_INK,
+  WORDS_WHITE,
+} from "./shades";
 import SHAPE, { HEIGHT_FINGER, UNIT } from "./shape";
 import STORY from "./story";
 import STRATEGY from "./strategy";
@@ -39,6 +50,8 @@ export type { Color, ColorID } from "./colors";
 export type { Font, FontID, FontWeight } from "./fonts";
 export type { LogoRule } from "./logo";
 export type { GroundsKind, TraitLook } from "./look";
+export type { Oklch } from "./oklch";
+export type { Shades, ShadeStep } from "./shades";
 export type { StoryID, StoryPart, StoryQuote } from "./story";
 export type { Offer, StrategyPoint } from "./strategy";
 export type { Leading, TypeStep, TypeStepID } from "./type";
@@ -52,16 +65,22 @@ export {
   ENDINGS_FONT,
   FILE_LOGO,
   FONTS,
+  getColor,
   getContrast,
   getContrastShown,
   getEntranceTime,
   getLuminance,
+  getOklch,
   getScaled,
+  getShades,
   getSize,
+  getStep,
+  getWords,
   GROUND_DARK,
   GROUND_LIGHT,
   GROUNDS_ORDER,
   HEIGHT_FINGER,
+  LIGHTNESS_SHADE,
   LOGO,
   LOOK,
   MISUSES_LOGO,
@@ -70,9 +89,12 @@ export {
   PRINCIPLES_LOGO,
   SCREEN_LAPTOP,
   SCREEN_PHONE,
+  SHADES,
   SHAPE,
   SIZE_LEAST,
   SLATE,
+  STEP_WHITE,
+  STEPS_SHADE,
   STORY,
   STRATEGY,
   TIME_FLOW,
@@ -81,4 +103,6 @@ export {
   UNIT,
   VOICE,
   WORDS_HYPE,
+  WORDS_INK,
+  WORDS_WHITE,
 };

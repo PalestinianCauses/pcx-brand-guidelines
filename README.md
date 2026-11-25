@@ -11,6 +11,7 @@ The parts arrive one at a time:
 | Part                      | Status    |
 | ------------------------- | --------- |
 | Colours and greys         | Available |
+| Shades and tints          | Available |
 | Fonts                     | Available |
 | Logo                      | Available |
 | Type scale                | Available |
@@ -35,6 +36,41 @@ The greys are the slate of Tailwind CSS 4, from 50 to 950, as hex values. A test
 `src/contrast.ts` measures the contrast between two colours, with the formula of WCAG 2. A colour can carry words on a ground when the contrast is 4.5 or more. A test measures each brand colour on the darkest and on the lightest grey, so the two last columns of the table can't be wrong.
 
 A contrast is shown to a person with `getContrastShown`: with one digit after the point, rounded down to the nearest one that ends in an even digit or in 5. So 9.34 is shown as 9.2, and 14.56 as 14.5. It is rounded down and never up, so a shown contrast is never more than the measured one. Both limits, 4.5 and 3.0, lie on that grid, so a shown contrast reaches a limit exactly when the measured one does.
+
+## Shades and tints
+
+`src/shades.ts` gives each of the four brand colours a scale of steps, named as the slate is: from 50, the lightest, to 950, the darkest. The lighter steps are tints, and the darker steps are shades.
+
+A brand colour itself does not change. It is one step of its own scale: purple 900, blue 500, pink 400 and yellow 100. A function makes every other step. Such a step has the hue of the colour, the lightness of the step, and as much of the colour's strength as a screen can show. A test holds every value.
+
+| Step | Purple    | Blue      | Pink      | Yellow    | Words |
+| ---- | --------- | --------- | --------- | --------- | ----- |
+| 50   | `#f0f0ff` | `#eaf3ff` | `#feecf2` | `#fff2c7` | Ink   |
+| 100  | `#e1e2ff` | `#d4e7ff` | `#ffd9e6` | `#ffd84d` | Ink   |
+| 200  | `#cbcbff` | `#b3d4ff` | `#ffbad3` | `#f4ce40` | Ink   |
+| 300  | `#b6b4ff` | `#90c1ff` | `#ff99c1` | `#e1ba21` | Ink   |
+| 400  | `#9c96f9` | `#60a7ff` | `#ff4fa3` | `#c4a100` | Ink   |
+| 500  | `#857edd` | `#1f8bff` | `#eb3a92` | `#a88900` | Ink   |
+| 600  | `#6e65c3` | `#0172dc` | `#ce117a` | `#8c7200` | White |
+| 700  | `#584da8` | `#005cb3` | `#a90162` | `#715b01` | White |
+| 800  | `#43368f` | `#00468c` | `#84004c` | `#574601` | White |
+| 900  | `#2e1a72` | `#003267` | `#600036` | `#3e3100` | White |
+| 950  | `#1b0052` | `#001a3b` | `#37001c` | `#221a00` | White |
+
+One rule gives the words on a step, in all four scales: a step of 600 or darker takes white words, and a lighter step takes ink words, in the darkest grey. `getWords` gives that colour. A test measures every step of every scale, and each reaches 4.5.
+
+The measure allows ink words on the blue and on the pink themselves, but small words are hard to read there. So a small part, such as a button or a badge, takes blue 600 or pink 600 with white words.
+
+```ts
+import { getWords, SHADES } from "@pcx.agency/brand-guidelines";
+
+const fill = SHADES.blue[600];
+const words = getWords(600);
+```
+
+`src/oklch.ts` reads and writes a colour as a person sees it: how light it is, how strong it is, and its hue. That is OKLCH, the space in which Tailwind CSS writes its colours. `getShades` makes the scale of any colour with it, and the test of the slate reads Tailwind's own values with it.
+
+Not here: which step a part uses, such as the fill of a button. The design system decides that, part by part. Not here yet: tints for badges and messages, a ground in a brand colour, the colours of a chart and the values for print.
 
 ## Fonts
 
