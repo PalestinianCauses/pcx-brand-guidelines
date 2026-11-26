@@ -45,11 +45,13 @@ const SHAPE = {
 
   // The focus: what a part looks like with the keyboard on it. The line of
   // the part takes the strong colour of its ground: white on a dark ground
-  // and ink on a light one. It is never a brand colour, so it stands out
-  // from a part in any of them. Around the line stands a soft ring of the
-  // same colour, at a share of its strength. Where a device forces its own
-  // colours, neither can be seen, so an outline stands around the part
-  // there, a little away from it.
+  // and ink on a light one. It is never a brand colour, so it is not taken
+  // for a part in one of them. Against a pale fill on a dark ground the
+  // white line is weak, and there it stands out from the ground around it.
+  // Around the line stands a soft ring of the same colour, at a share of
+  // its strength. Where a device forces its own colours, neither can be
+  // seen, so an outline stands around the part there, a little away from
+  // it.
   focus: {
     width: 1,
     ringWidth: 1,
