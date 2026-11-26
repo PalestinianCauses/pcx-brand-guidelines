@@ -28,6 +28,7 @@ import LOGO, {
   PRINCIPLES_LOGO,
 } from "./logo";
 import LOOK, { GROUNDS_ORDER } from "./look";
+import MESSAGE, { getTint, GROUNDS_TINTED } from "./message";
 import getColor, { getOklch } from "./oklch";
 import MOTION, {
   getEntranceTime,
@@ -76,6 +77,7 @@ export type { On } from "./form";
 export type { IconFamily } from "./icons";
 export type { LogoRule } from "./logo";
 export type { GroundsKind, TraitLook } from "./look";
+export type { KindsID, Tint, Urgency } from "./message";
 export type { Oklch } from "./oklch";
 export type { Shades, ShadeStep } from "./shades";
 export type { ShadowState } from "./shadow";
@@ -112,6 +114,7 @@ export {
   getMainFill,
   getOklch,
   getOn,
+  getTint,
   getScaled,
   getShades,
   getSize,
@@ -123,6 +126,7 @@ export {
   GROUND_LIGHT,
   GROUNDS,
   GROUNDS_ORDER,
+  GROUNDS_TINTED,
   GROUNDS_WRONG,
   HEIGHT_FINGER,
   ICONS,
@@ -130,6 +134,7 @@ export {
   LIGHTNESS_SHADE,
   LOGO,
   LOOK,
+  MESSAGE,
   MISUSES_LOGO,
   MOTION,
   MOTION_REDUCED,
