@@ -2,14 +2,22 @@
 // its name, so that the built code names every export where Node can read
 // it.
 
-import COLORS, { GROUND_DARK, GROUND_LIGHT, SLATE } from "./colors";
+import COLORS, { GROUND_DARK, GROUND_LIGHT, GROUNDS, SLATE } from "./colors";
 import getContrast, {
   CONTRAST_PARTS,
   CONTRAST_WORDS,
   getContrastShown,
   getLuminance,
 } from "./contrast";
-import FILLS, { COLOR_ACTION, COLORS_PALE, getFill } from "./fills";
+import FIELD, { COLOR_WRONG, getWrong, GROUNDS_WRONG } from "./field";
+import FILLS, {
+  COLOR_ACTION,
+  COLORS_PALE,
+  getFill,
+  getFillsClear,
+  getMainFill,
+  SHARES_QUIET,
+} from "./fills";
 import FONTS, { ENDINGS_FONT } from "./fonts";
 import ICONS from "./icons";
 import LOGO, {
@@ -37,9 +45,11 @@ import SHADES, {
   WORDS_INK,
   WORDS_WHITE,
 } from "./shades";
-import SHADOW, { getLines } from "./shadow";
+import SHADOW, { getLines, getLinesOn } from "./shadow";
 import SHAPE, {
+  getFocusColor,
   HEIGHT_FINGER,
+  isFocusAround,
   POINTER_PRESS,
   SIDE_LEAST,
   SIZES_CONTROL,
@@ -57,8 +67,9 @@ import TYPE, {
 } from "./type";
 import VOICE, { WORDS_HYPE } from "./voice";
 
-export type { Color, ColorID } from "./colors";
-export type { Fill } from "./fills";
+export type { Color, ColorID, GroundsID } from "./colors";
+export type { PartField, Wrong } from "./field";
+export type { Fill, MainFill } from "./fills";
 export type { Font, FontID, FontWeight } from "./fonts";
 export type { IconFamily } from "./icons";
 export type { LogoRule } from "./logo";
@@ -74,12 +85,14 @@ export type { VoiceLayer, VoicePlace, VoicePoint } from "./voice";
 
 export {
   COLOR_ACTION,
+  COLOR_WRONG,
   COLORS,
   COLORS_LOGO,
   COLORS_PALE,
   CONTRAST_PARTS,
   CONTRAST_WORDS,
   ENDINGS_FONT,
+  FIELD,
   FILE_LOGO,
   FILLS,
   FONTS,
@@ -88,8 +101,12 @@ export {
   getContrastShown,
   getEntranceTime,
   getFill,
+  getFillsClear,
+  getFocusColor,
   getLines,
+  getLinesOn,
   getLuminance,
+  getMainFill,
   getOklch,
   getScaled,
   getShades,
@@ -97,11 +114,15 @@ export {
   getStep,
   getWords,
   getWordsOn,
+  getWrong,
   GROUND_DARK,
   GROUND_LIGHT,
+  GROUNDS,
   GROUNDS_ORDER,
+  GROUNDS_WRONG,
   HEIGHT_FINGER,
   ICONS,
+  isFocusAround,
   LIGHTNESS_SHADE,
   LOGO,
   LOOK,
@@ -115,6 +136,7 @@ export {
   SHADES,
   SHADOW,
   SHAPE,
+  SHARES_QUIET,
   SIDE_LEAST,
   SIZE_LEAST,
   SIZES_CONTROL,

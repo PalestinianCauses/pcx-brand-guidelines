@@ -2,9 +2,9 @@
 // a part and below it. The look says where a hard shadow may stand. This
 // file says what it is. Every length is in pixels.
 
-import { SLATE } from "./colors";
+import { type GroundsID, GROUNDS, SLATE } from "./colors";
 import type { GroundsKind } from "./look";
-import { getWordsOn, WORDS_INK } from "./shades";
+import { getWordsOn, WORDS_INK, WORDS_WHITE } from "./shades";
 import SHAPE, { UNIT } from "./shape";
 
 // A state of a part in which it has no hard shadow.
@@ -44,6 +44,27 @@ export const getLines = function getLines(
   const isPale = getWordsOn(part) === WORDS_INK;
   const colorDark = isPale ? SHADOW.colorPale : SHADOW.colorDark;
   const lines = ground === "dark" ? colorDark : SHADOW.colorLight;
+
+  return lines;
+};
+
+// The colour of the lines beside a part on any ground, by the name of the
+// ground. A ground whose words are white takes the lines of a dark ground,
+// and every other ground takes the lines of a light one. So the lines are
+// ink on the blue, the pink and the yellow ground, and those of a dark
+// ground on the purple one. The main button of a ground in a brand colour
+// has the colour of the words on that ground. Beside it the lines are the
+// plain lines of the ground, also where it is pale: they stand out from the
+// ground, and the band reads because it is hatched and the button is not.
+export const getLinesOn = function getLinesOn(
+  part: string,
+  ground: GroundsID,
+): string {
+  const strong = getWordsOn(GROUNDS[ground]);
+  const isDark = strong === WORDS_WHITE;
+  const plain = isDark ? SHADOW.colorDark : SHADOW.colorLight;
+  const isMain = part.toLowerCase() === strong.toLowerCase();
+  const lines = isMain ? plain : getLines(part, isDark ? "dark" : "light");
 
   return lines;
 };

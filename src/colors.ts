@@ -65,4 +65,18 @@ const COLORS: Record<ColorID, Color> = {
   },
 };
 
+// A ground that a section can stand on, by its name: the darkest grey, the
+// lightest grey, or one of the four brand colours.
+export type GroundsID = "dark" | "light" | ColorID;
+
+// The colour of every ground.
+export const GROUNDS: Record<GroundsID, string> = {
+  dark: GROUND_DARK,
+  light: GROUND_LIGHT,
+  purple: COLORS.purple.value,
+  blue: COLORS.blue.value,
+  pink: COLORS.pink.value,
+  yellow: COLORS.yellow.value,
+};
+
 export default COLORS;

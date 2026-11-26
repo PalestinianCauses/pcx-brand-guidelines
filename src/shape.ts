@@ -1,8 +1,8 @@
 // The shape of the PCX brand: square corners, thin lines and spaces in steps
 // of one unit. Every value is in pixels.
 
-import COLORS from "./colors";
-import { WORDS_INK, WORDS_WHITE } from "./shades";
+import COLORS, { type GroundsID, GROUNDS } from "./colors";
+import { getWordsOn, WORDS_INK, WORDS_WHITE } from "./shades";
 
 // Every space and every height is a multiple of this unit.
 export const UNIT = 4;
@@ -51,7 +51,9 @@ const SHAPE = {
   // Around the line stands a soft ring of the same colour, at a share of
   // its strength. Where a device forces its own colours, neither can be
   // seen, so an outline stands around the part there, a little away from
-  // it.
+  // it. The same outline stands around a part that has the colour of the
+  // line itself, in the colour of the line and with no soft ring: on such a
+  // part nobody could see the line. `isFocusAround` says where.
   focus: {
     width: 1,
     ringWidth: 1,
@@ -88,5 +90,23 @@ const SHAPE = {
     sectionLaptop: 96,
   },
 } as const;
+
+// The colour of the line of the focus on any ground, by the name of the
+// ground: the colour of the words on it, white or ink.
+export const getFocusColor = function getFocusColor(ground: GroundsID): string {
+  const color = getWordsOn(GROUNDS[ground]);
+  return color;
+};
+
+// Whether the line of the focus stands around a part, away from it, where
+// it would otherwise lie on its edge. That is so where the part has the
+// colour of the line: the main button of a ground in a brand colour.
+export const isFocusAround = function isFocusAround(
+  part: string,
+  ground: GroundsID,
+): boolean {
+  const isHidden = part.toLowerCase() === getFocusColor(ground).toLowerCase();
+  return isHidden;
+};
 
 export default SHAPE;
