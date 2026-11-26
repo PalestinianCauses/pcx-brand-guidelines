@@ -164,6 +164,12 @@ test("on a ground in a brand colour the lines are ink where the words are ink, a
   assert.equal(getLinesOn(blue, "purple"), colorDark);
   assert.equal(getLinesOn(yellow, "purple"), colorPale);
 
+  // A white part on the dark ground is a pale part, and no main button:
+  // it keeps the darker lines, as `getLines` gives them.
+  assert.equal(getLinesOn("#ffffff", "dark"), colorPale);
+  assert.equal(getLinesOn("#ffffff", "dark"), getLines("#ffffff", "dark"));
+  assert.equal(getLinesOn(WORDS_INK, "light"), getLines(WORDS_INK, "light"));
+
   (["blue", "pink", "yellow"] as GroundsID[]).forEach((ground) => {
     assert.equal(getLinesOn(blue, ground), colorLight, ground);
     assert.equal(getLinesOn(yellow, ground), colorLight, ground);

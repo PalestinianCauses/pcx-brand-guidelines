@@ -56,6 +56,7 @@ export const getLines = function getLines(
 // has the colour of the words on that ground. Beside it the lines are the
 // plain lines of the ground, also where it is pale: they stand out from the
 // ground, and the band reads because it is hatched and the button is not.
+// On the dark and on the light ground a pale part keeps the darker lines.
 export const getLinesOn = function getLinesOn(
   part: string,
   ground: GroundsID,
@@ -63,7 +64,8 @@ export const getLinesOn = function getLinesOn(
   const strong = getWordsOn(GROUNDS[ground]);
   const isDark = strong === WORDS_WHITE;
   const plain = isDark ? SHADOW.colorDark : SHADOW.colorLight;
-  const isMain = part.toLowerCase() === strong.toLowerCase();
+  const isColor = ground !== "dark" && ground !== "light";
+  const isMain = isColor && part.toLowerCase() === strong.toLowerCase();
   const lines = isMain ? plain : getLines(part, isDark ? "dark" : "light");
 
   return lines;
