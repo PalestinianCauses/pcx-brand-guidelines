@@ -19,6 +19,7 @@ import FILLS, {
   SHARES_QUIET,
 } from "./fills";
 import FONTS, { ENDINGS_FONT } from "./fonts";
+import FORM, { getOn } from "./form";
 import ICONS from "./icons";
 import LOGO, {
   COLORS_LOGO,
@@ -71,6 +72,7 @@ export type { Color, ColorID, GroundsID } from "./colors";
 export type { PartField, Wrong } from "./field";
 export type { Fill, MainFill } from "./fills";
 export type { Font, FontID, FontWeight } from "./fonts";
+export type { On } from "./form";
 export type { IconFamily } from "./icons";
 export type { LogoRule } from "./logo";
 export type { GroundsKind, TraitLook } from "./look";
@@ -96,6 +98,7 @@ export {
   FILE_LOGO,
   FILLS,
   FONTS,
+  FORM,
   getColor,
   getContrast,
   getContrastShown,
@@ -108,6 +111,7 @@ export {
   getLuminance,
   getMainFill,
   getOklch,
+  getOn,
   getScaled,
   getShades,
   getSize,
