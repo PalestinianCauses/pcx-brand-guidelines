@@ -23,6 +23,7 @@ The parts arrive one at a time:
 | A message                 | Available |
 | A badge                   | Available |
 | A card                    | Available |
+| A link                    | Available |
 | Icons                     | Available |
 | Motion                    | Available |
 | Story, strategy and voice | Available |
@@ -397,6 +398,29 @@ A card that can be pressed is one link as a whole. It has an arrow of 20 pixels 
 On a ground in a brand colour the fill of a card is the quiet fill of that ground. Its line takes 14 parts of a hundred of white, or 20 of ink. On a ground with white words its words take 88 parts of a hundred of white. The line of a card at rest only parts it from the page, so it is not measured.
 
 Not here: a picture in a card, and the look of a card with the keyboard on it, which is the focus of every part.
+
+## A link
+
+`src/link.ts` holds the link in a text: words that lead to another page.
+
+A link always has a line under it, on every ground. So a link never rests on its colour: beside running text its colour stands less than a part needs, on every ground. It is 1 pixel thick and runs 4 pixels under the words. Under the pointer it is 2 pixels thick.
+
+A link is an action, so it has the brand's colour of an action where that can be read: the blue itself on the dark ground, and step 700 of it on the light ground, where the blue itself can't be read as words. On a ground in a brand colour a link has the colour of the words, and its line tells it from them. `getLink` gives its colour on every ground, with its contrast against the ground and against the fill of a card:
+
+| Ground | Its colour                         | Against the ground | On a card |
+| ------ | ---------------------------------- | ------------------ | --------- |
+| Dark   | The brand's blue, `#1f8bff`        | 5.8                | 5.2       |
+| Light  | Blue 700, `#005cb3`                | 6.2                | 6.6       |
+| Purple | The colour of the words, `#ffffff` | 13.8               | 11.2      |
+| Blue   | The colour of the words, `#020618` | 5.8                | 5.0       |
+| Pink   | The colour of the words, `#020618` | 6.6                | 5.6       |
+| Yellow | The colour of the words, `#020618` | 14.5               | 12.2      |
+
+A link is words, so it needs a contrast of 4.5 or more, and a test holds every one.
+
+A link keeps the type of the words around it: their size, their weight and their line height. With the keyboard on it, it has the line of the focus around it, 1 pixel wide and 2 pixels away. It has no look of its own once it was visited.
+
+Not here: a link in the top bar and in the menu, the link that skips to the content of a page, and a sign for a link that leaves the website.
 
 ## Icons
 

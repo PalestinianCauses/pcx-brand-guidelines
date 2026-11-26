@@ -24,6 +24,7 @@ import FILLS, {
 import FONTS, { ENDINGS_FONT } from "./fonts";
 import FORM, { getOn } from "./form";
 import ICONS from "./icons";
+import LINK, { getLink, GROUNDS_LINK } from "./link";
 import LOGO, {
   COLORS_LOGO,
   FILE_LOGO,
@@ -80,6 +81,7 @@ export type { Fill, MainFill } from "./fills";
 export type { Font, FontID, FontWeight } from "./fonts";
 export type { On } from "./form";
 export type { IconFamily } from "./icons";
+export type { Link } from "./link";
 export type { LogoRule } from "./logo";
 export type { GroundsKind, TraitLook } from "./look";
 export type { KindsID, Tint, Urgency } from "./message";
@@ -120,6 +122,7 @@ export {
   getFocusColor,
   getLines,
   getLinesOn,
+  getLink,
   getLuminance,
   getMainFill,
   getOklch,
@@ -136,6 +139,7 @@ export {
   GROUND_DARK,
   GROUND_LIGHT,
   GROUNDS,
+  GROUNDS_LINK,
   GROUNDS_ORDER,
   GROUNDS_SOFT,
   GROUNDS_TINTED,
@@ -144,6 +148,7 @@ export {
   ICONS,
   isFocusAround,
   LIGHTNESS_SHADE,
+  LINK,
   LOGO,
   LOOK,
   MESSAGE,
