@@ -6,6 +6,7 @@ import BADGE, { getBadge, getQuiet, GROUNDS_SOFT } from "./badge";
 import getBlend from "./blend";
 import CARD, { getCard } from "./card";
 import COLORS, { GROUND_DARK, GROUND_LIGHT, GROUNDS, SLATE } from "./colors";
+import { getNumber, POINTS, ROWS, SEPARATOR } from "./content";
 import getContrast, {
   CONTRAST_PARTS,
   CONTRAST_WORDS,
@@ -125,6 +126,7 @@ export {
   getLink,
   getLuminance,
   getMainFill,
+  getNumber,
   getOklch,
   getOn,
   getQuiet,
@@ -156,9 +158,12 @@ export {
   MOTION,
   MOTION_REDUCED,
   POINTER_PRESS,
+  POINTS,
   PRINCIPLES_LOGO,
+  ROWS,
   SCREEN_LAPTOP,
   SCREEN_PHONE,
+  SEPARATOR,
   SHADES,
   SHADOW,
   SHAPE,
