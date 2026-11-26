@@ -358,14 +358,14 @@ On the dark and on the light ground a badge of a state that has a colour has a s
 
 | Ground | Kind    | Soft fill             | Words on it | Icon and line                 | Against the fill | Against the ground |
 | ------ | ------- | --------------------- | ----------- | ----------------------------- | ---------------- | ------------------ |
-| Dark   | Wrong   | Pink 900, `#610036`   | 13.4        | Pink 500, `#eb3a92`           | 3.5              | 5.2                |
+| Dark   | Wrong   | Pink 900, `#610036`   | 13.4        | Pink 300, `#ff99c1`           | 6.6              | 10.0               |
 | Dark   | Warning | Yellow 900, `#3e3100` | 12.6        | The brand's yellow, `#ffd84d` | 9.2              | 14.5               |
-| Dark   | Note    | Blue 900, `#003267`   | 12.6        | The brand's blue, `#1f8bff`   | 3.6              | 5.8                |
+| Dark   | Note    | Blue 900, `#003267`   | 12.6        | Blue 300, `#90c1ff`           | 6.8              | 10.8               |
 | Light  | Wrong   | Pink 100, `#ffd9e6`   | 15.6        | Pink 600, `#ce117a`           | 4.0              | 5.0                |
 | Light  | Warning | Yellow 50, `#fff2c6`  | 18.0        | Yellow 500, `#a88900`         | 3.0              | 3.2                |
 | Light  | Note    | Blue 100, `#d4e7ff`   | 16.0        | Blue 600, `#0072dc`           | 3.6              | 4.5                |
 
-Words need a contrast of 4.5 or more, and an icon and a line need 3. A test holds every one. The icon takes the colour that a message of that kind has on the ground where that stands out from the fill, and the first darker step where it does not.
+Words need a contrast of 4.5 or more, and an icon and a line need 3. A test holds every one. The icon takes the colour that a message of that kind has on the ground where that stands out from the fill, and the first darker step where it does not. On the deep fill of the dark ground it takes step 300 of its scale, where that is lighter than the colour of the state: a colour of middle lightness looks weak on a deep fill of its own colour. The brand's yellow is lighter than that step, so it stays.
 
 A success has no colour, as in a message, and a plain badge marks no state. Both have the quiet fill and no line, on every ground. On the purple ground a state keeps the quiet fill, and its icon alone has its colour: Pink 400 at 3.6, the brand's yellow at 8.0 and the brand's blue at 3.2. On the blue, the pink and the yellow ground no state has a colour, and the icon has the colour of the words.
 
