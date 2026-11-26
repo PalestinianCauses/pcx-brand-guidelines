@@ -253,6 +253,22 @@ test("the line of the focus stands out from every fill but a pale one on a dark 
     weak.map(([id, ground]) => [id, ground]),
     [["yellow", "dark"]],
   );
+
+  assert.ok(getContrast(colorDark, GROUND_DARK) >= CONTRAST_PARTS);
+});
+
+test("the README says where the line of the focus is weak, as it is measured", async () => {
+  const readme = await readFile(FILE_README, "utf8");
+
+  const shown = getContrastShown(
+    getContrast(SHAPE.focus.colorDark, FILLS.yellow.color),
+  );
+
+  assert.ok(
+    readme.includes(
+      `Against the yellow fill on a dark ground the white line reaches ${shown}`,
+    ),
+  );
 });
 
 test("the older focus ring keeps its values, in the brand's blue", () => {
