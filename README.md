@@ -12,10 +12,13 @@ The parts arrive one at a time:
 | ------------------------- | --------- |
 | Colours and greys         | Available |
 | Shades and tints          | Available |
+| Fills of a main button    | Available |
 | Fonts                     | Available |
 | Logo                      | Available |
 | Type scale                | Available |
 | Shape, lines and spacing  | Available |
+| Hard shadow               | Available |
+| Icons                     | Available |
 | Motion                    | Available |
 | Story, strategy and voice | Available |
 | The look                  | Available |
@@ -72,7 +75,32 @@ const words = getWords(600);
 
 `src/oklch.ts` reads and writes a colour as a person sees it: how light it is, how strong it is, and its hue. That is OKLCH, the space in which Tailwind CSS writes its colours. `getShades` makes the scale of any colour with it, and the test of the slate reads Tailwind's own values with it.
 
-Not here: which step a part uses, such as the fill of a button. The design system decides that, part by part. Not here yet: tints for badges and messages, a ground in a brand colour, the colours of a chart and the values for print.
+The fill of a main button is in `src/fills.ts`. Not here: which step any other part uses. The design system decides that, part by part. Not here yet: tints for badges and messages, a ground in a brand colour, the colours of a chart and the values for print.
+
+## Fills of a main button
+
+`src/fills.ts` says which step of a brand colour fills a main button, and which step it takes under the pointer.
+
+| Colour | Fill                  | Under the pointer     | Words | Stands out from the darkest grey | Stands out from the lightest grey |
+| ------ | --------------------- | --------------------- | ----- | -------------------------------- | --------------------------------- |
+| Purple | Purple 600, `#6e65c3` | Purple 700, `#584da8` | White | Yes                              | Yes                               |
+| Blue   | Blue 600, `#0072dc`   | Blue 700, `#005cb3`   | White | Yes                              | Yes                               |
+| Pink   | Pink 600, `#ce117a`   | Pink 700, `#a90062`   | White | Yes                              | Yes                               |
+| Yellow | Yellow 100, `#ffd84d` | Yellow 200, `#f4ce40` | Ink   | Yes                              | No                                |
+
+A fill is step 600 of its scale: the first step that takes white words. Under the pointer it is one step darker. Yellow is the exception. A yellow that is dark enough for white words is no yellow any more, so a yellow button keeps the brand's own yellow, with ink words. `COLORS_PALE` names it.
+
+Blue is the main button of a view. It is the brand's colour of an action, and `COLOR_ACTION` names it.
+
+A fill stands out from a grey when the two reach a contrast of 3. The yellow fill reaches 1.2 against the lightest grey, so a yellow button belongs on the dark ground. Under the pointer, the purple and the pink fill fall a little under 3 against the darkest grey, at 2.8 and 2.6. The white words and the hard shadow carry the button there.
+
+```ts
+import { FILLS } from "@pcx.agency/brand-guidelines";
+
+const { color, colorHover, words } = FILLS.blue;
+```
+
+Not here: the quiet kinds of a button, when a page uses which of the four colours, and a colour for a thing that deletes.
 
 ## Fonts
 
@@ -132,26 +160,73 @@ Not here: scales for slides, documents and print, and the rules for paragraphs.
 
 `src/shape.ts` holds the shape: square corners, thin lines and spaces in steps of 4 pixels.
 
-| Part                                    | Value                                                         |
-| --------------------------------------- | ------------------------------------------------------------- |
-| Corners                                 | Square, on buttons, fields, cards and tags                    |
-| Thin line                               | 1 pixel, around blocks and between rows                       |
-| Thick line                              | 2 pixels, for emphasis                                        |
-| Height of a button or a field           | 44 pixels, on every screen                                    |
-| Focus ring                              | The brand's blue, 2 pixels thick, 2 pixels away from the part |
-| Room inside a card                      | 24 pixels                                                     |
-| Room between two cards                  | 16 pixels                                                     |
-| Room between a heading and what follows | 28 pixels                                                     |
-| Room above a section                    | 48 pixels on a phone, 96 pixels on a laptop                   |
-| Room below a section                    | 56 pixels on a phone, 96 pixels on a laptop                   |
+| Part                                    | Value                                                                                                                  |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Corners                                 | Square, on buttons, fields, cards and tags                                                                             |
+| Thin line                               | 1 pixel, around blocks and between rows                                                                                |
+| Thick line                              | 2 pixels, for emphasis                                                                                                 |
+| Height of a button or a field           | 44 pixels in its default size, on every screen                                                                         |
+| Sizes of a control                      | 28, 36, 44 and 52 pixels, named xs, sm, default and lg                                                                 |
+| Focus                                   | The strong colour of the ground: white on dark, ink on light. A line of 1 pixel, with a soft ring of 1 pixel around it |
+| Pointer over a part that can be pressed | The hand                                                                                                               |
+| Room inside a card                      | 24 pixels                                                                                                              |
+| Room between two cards                  | 16 pixels                                                                                                              |
+| Room between a heading and what follows | 28 pixels                                                                                                              |
+| Room above a section                    | 48 pixels on a phone, 96 pixels on a laptop                                                                            |
+| Room below a section                    | 56 pixels on a phone, 96 pixels on a laptop                                                                            |
 
-Every space and every height is a multiple of 4 pixels, and a test proves it. A button or a field is 44 pixels high, the height a finger needs. Another test measures the focus ring on the darkest and on the lightest grey: a part that is not words needs a contrast of 3 or more.
+Every space and every height is a multiple of 4 pixels, and a test proves it. A button or a field is 44 pixels high in its default size, the height a finger needs.
+
+A control has four sizes, under the names that ShadCN gives them. One size is 8 pixels higher than the one before it. The two smaller ones are for a dense screen that is used with a pointer, and the large one is for the one main action of a view. Both smaller ones stay above the 24 by 24 pixels that WCAG 2.2 asks of a part to press, at its level AA.
+
+The focus is what a part looks like with the keyboard on it. The line of the part takes the strong colour of its ground: white on a dark ground, and ink on a light one. It is never a brand colour, so it stands out from a part in any of them. Around the line stands a soft ring of the same colour, at half its strength. A test measures the line and the soft ring on the darkest and on the lightest grey: a part that is not words needs a contrast of 3 or more. Where a device forces its own colours, an outline of 1 pixel stands around the part, 2 pixels away.
+
+Before v2.3.0 the focus was a ring in the brand's blue, 2 pixels thick and 2 pixels away. On a blue button it was hard to tell from the button: the two reach 1.2. The name `ringFocus` is still there, with those values. It is marked as deprecated, and it leaves with the next major version.
 
 Between a phone and a laptop, the room around a section grows evenly with the screen, as a size does. `getScaled` gives a value for any width.
 
 Since v1.1.0 the room follows the PCX website too. The names `sectionPhone` and `sectionLaptop` are still there, and they hold the room above a section. They are marked as deprecated, and they leave with the next major version.
 
-Not here: shadows and layers, breakpoints, and the colours of lines.
+Not here: layers, breakpoints, and the colours of lines. The hard shadow has its own file.
+
+## Hard shadow
+
+`src/shadow.ts` says what a hard shadow is. The look says where one may stand.
+
+| Part                                      | Value                                                       |
+| ----------------------------------------- | ----------------------------------------------------------- |
+| The band                                  | To the right of a part and below it, 6 pixels wide          |
+| Its lines                                 | 1 pixel wide, 4 pixels from one to the next, at 135 degrees |
+| Lines on a dark ground                    | Slate 300, `#cad5e2`                                        |
+| Lines on a light ground                   | Ink, `#020618`                                              |
+| Lines beside a pale part on a dark ground | Slate 500, `#62748e`                                        |
+| A pressed part                            | It moves 6 pixels, into the place of its shadow             |
+| No shadow                                 | While a part is pressed, with the keyboard on it, or off    |
+
+A hard shadow is a band of slanted lines, not a solid block. Its lines are thin lines, one unit apart. The design system draws the margins of a page with lines at the same angle, twice as far apart.
+
+A pale part is one that takes ink words, such as a yellow button. Light lines would not stand out from it, so the lines beside it are darker on a dark ground. `getLines` gives the colour of the lines beside any part.
+
+The focus and the hard shadow never meet: a part with the keyboard on it has no shadow.
+
+Tests measure the lines against both grounds, and against the fill of every main button. Each pair reaches 3 at rest. Under the pointer, the lines fall a little under 3 against the purple and the pink fill on a light ground, at 2.8 and 2.6. The lines still stand out from the ground there, and so does the button.
+
+Not here: a hard shadow on a ground in a brand colour.
+
+## Icons
+
+`src/icons.ts` names the icons of the brand.
+
+| Part                                                                       | Value                        |
+| -------------------------------------------------------------------------- | ---------------------------- |
+| Icons for normal work                                                      | Lucide, `https://lucide.dev` |
+| Icons for a section with animated icons, or with icons in three dimensions | Iconly, `https://iconly.pro` |
+| An icon in a control                                                       | 16 pixels wide and high      |
+| An icon in the smallest size of a control                                  | 14 pixels wide and high      |
+
+An icon in a part stands for what the part does, and a screen reader passes it by. A button with an icon alone has a name that a screen reader says.
+
+Not here yet: how Iconly is used, and the icons of the sections of a page.
 
 ## Motion
 
