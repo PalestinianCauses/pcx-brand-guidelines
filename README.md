@@ -19,6 +19,7 @@ The parts arrive one at a time:
 | Shape, lines and spacing  | Available |
 | Hard shadow               | Available |
 | A field                   | Available |
+| The other parts of a form | Available |
 | Icons                     | Available |
 | Motion                    | Available |
 | Story, strategy and voice | Available |
@@ -270,7 +271,34 @@ A field that is wrong is pink on a dark, on a light and on the purple ground. It
 
 A wrong field never rests on its colour. An icon and words say what is wrong, on every ground. Only its line and its error take the colour: its label and its hint keep theirs. On the three grounds with the pink, the pink can be told from the words of the ground at a contrast of 3 or more, and a test holds it.
 
-Not here: the colours of a warning, a success and a note, the wording of an error, and the other parts of a form.
+Not here: the colours of a warning, a success and a note, and the wording of an error.
+
+## The other parts of a form
+
+`src/form.ts` says what is their own for a ticking box, a radio, a switch and the list that a select opens. The rest follows the button and the field: a control that is off has the line and the fill of a field, the focus is the focus of every part, and a control that is wrong looks as a wrong field does.
+
+A control that is on is a box that is ticked, the chosen radio and a switch that is on. It takes the fill of the main button of its ground, and its mark takes the words of that button. The mark is the tick, the dot or the thumb. So a control that is on is no one colour: it changes with its ground, as the main button does. `getOn` gives it on every ground:
+
+| Ground | A control that is on | Against the ground | Its mark against it |
+| ------ | -------------------- | ------------------ | ------------------- |
+| Dark   | Blue 600, `#0072dc`  | 4.2                | 4.6                 |
+| Light  | Blue 600, `#0072dc`  | 4.5                | 4.6                 |
+| Purple | White, `#ffffff`     | 13.8               | 20.0                |
+| Blue   | Ink, `#020618`       | 5.8                | 20.0                |
+| Pink   | Ink, `#020618`       | 6.6                | 20.0                |
+| Yellow | Ink, `#020618`       | 14.5               | 20.0                |
+
+A fill and a mark need a contrast of 3 or more, and a test holds every pair. A control never rests on its colour: the tick, the dot and the place of the thumb say that it is on.
+
+`FORM` holds the sizes and the shapes:
+
+- A ticking box and a radio are 20 pixels, to stand beside words of 16 pixels and more. The tick is 14 pixels and the dot is 8.
+- The track of a switch is 36 pixels by 20, as high as a ticking box, and its thumb is 14 pixels. The thumb stands 2 pixels from the line of the track.
+- A ticking box and a switch are square, as every part of PCX is. A radio is round, the one round part: its shape is what tells it from a ticking box.
+- The place of a press reaches past a small control: 12 pixels to each side and 8 above and below. With it the place is larger than the 24 pixels that a pointer needs.
+- The list of a select has the colour of its ground and the line of a field, and it opens 4 pixels under the select. An item is 44 pixels high, as a finger needs. The pointed item has the fill of a quiet button under the pointer, and a line of 2 pixels at its start in the colour of the words on the ground. The chosen item has a tick.
+
+Not here: the message of a whole form, how the list of a select moves in, and the look of a menu and of a dialog.
 
 ## Icons
 
