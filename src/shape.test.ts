@@ -1,16 +1,72 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-import COLORS, { GROUND_DARK, GROUND_LIGHT } from "./colors";
-import getContrast, { CONTRAST_PARTS } from "./contrast";
-import SHAPE, { HEIGHT_FINGER, UNIT } from "./shape";
+import COLORS, { type ColorID, GROUND_DARK, GROUND_LIGHT } from "./colors";
+import getContrast, { CONTRAST_PARTS, getContrastShown } from "./contrast";
+import FILLS from "./fills";
+import SHADES, { WORDS_INK, WORDS_WHITE } from "./shades";
+import SHAPE, {
+  HEIGHT_FINGER,
+  POINTER_PRESS,
+  SIDE_LEAST,
+  SIZES_CONTROL,
+  STEP_CONTROL,
+  UNIT,
+} from "./shape";
 import { getScaled, SCREEN_LAPTOP, SCREEN_PHONE } from "./type";
+
+const FILE_README = "README.md";
+
+const IDS = Object.keys(COLORS) as ColorID[];
+
+// The two channels of a hex colour that stand for one of red, green and
+// blue, and the base of such a number.
+const PATTERN_PAIR = /[0-9a-f]{2}/gi;
+const BASE_HEX = 16;
+
+// A colour as it shows over another one at a share of its strength.
+const getBlend = function getBlend(
+  under: string,
+  over: string,
+  share: number,
+): string {
+  const channelsOver = (over.match(PATTERN_PAIR) || []).map((pair) =>
+    parseInt(pair, BASE_HEX),
+  );
+
+  const channels = (under.match(PATTERN_PAIR) || []).map((pair, index) => {
+    const channel = parseInt(pair, BASE_HEX);
+    const overChannel = channelsOver[index] || 0;
+    const blended = Math.round(channel * (1 - share) + overChannel * share);
+
+    return blended.toString(BASE_HEX).padStart(2, "0");
+  });
+
+  return `#${channels.join("")}`;
+};
+
+// A list as a sentence writes it: 28, 36, 44 and 52.
+const getList = function getList(items: (number | string)[]): string {
+  const list = `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`;
+  return list;
+};
 
 test("the shape keeps its corners, lines, heights and spaces", () => {
   assert.deepEqual(SHAPE, {
     corner: 0,
     lines: { thin: 1, thick: 2 },
     heightControl: 44,
+    heightsControl: { xs: 28, sm: 36, default: 44, lg: 52 },
+    focus: {
+      width: 1,
+      ringWidth: 1,
+      ringShare: 0.5,
+      colorDark: "#ffffff",
+      colorLight: "#020618",
+      outlineWidth: 1,
+      outlineOffset: 2,
+    },
     ringFocus: { width: 2, offset: 2, color: "#1f8bff" },
     spaces: {
       inside: 24,
@@ -32,11 +88,60 @@ test("the unit, the height for a finger and the contrast for parts keep their va
   assert.equal(CONTRAST_PARTS, 3);
 });
 
-test("every space and the height of a control are multiples of the unit", () => {
-  const sizes = [...Object.values(SHAPE.spaces), SHAPE.heightControl];
+test("the least side for a pointer, the step of a control and the pointer keep their values", () => {
+  assert.equal(SIDE_LEAST, 24);
+  assert.equal(STEP_CONTROL, 8);
+  assert.equal(POINTER_PRESS, "pointer");
+  assert.deepEqual(SIZES_CONTROL, ["xs", "sm", "default", "lg"]);
+});
+
+test("every space and every height of a control are multiples of the unit", () => {
+  const sizes = [
+    ...Object.values(SHAPE.spaces),
+    ...Object.values(SHAPE.heightsControl),
+    SHAPE.heightControl,
+  ];
+
   const sizesUnfit = sizes.filter((size) => size % UNIT !== 0);
 
   assert.deepEqual(sizesUnfit, []);
+});
+
+test("a control has four sizes, from the smallest to the largest, each one step higher than the one before", () => {
+  const heights = SIZES_CONTROL.map((size) => SHAPE.heightsControl[size]);
+  const steps = heights
+    .slice(1)
+    .map((height, index) => height - heights[index]);
+
+  assert.deepEqual(Object.keys(SHAPE.heightsControl), SIZES_CONTROL);
+
+  assert.deepEqual(
+    steps,
+    steps.map(() => STEP_CONTROL),
+  );
+
+  assert.equal(STEP_CONTROL % UNIT, 0);
+});
+
+test("the default size is the height of a control, and no size is too small for a pointer", () => {
+  const heights = Object.values(SHAPE.heightsControl);
+
+  assert.equal(SHAPE.heightsControl.default, SHAPE.heightControl);
+  assert.equal(SHAPE.heightsControl.default, HEIGHT_FINGER);
+  assert.ok(SIDE_LEAST < HEIGHT_FINGER);
+
+  assert.deepEqual(
+    heights.filter((height) => height < SIDE_LEAST),
+    [],
+  );
+});
+
+test("only the two smaller sizes are lower than a finger needs", () => {
+  const sizesLow = SIZES_CONTROL.filter(
+    (size) => SHAPE.heightsControl[size] < HEIGHT_FINGER,
+  );
+
+  assert.deepEqual(sizesLow, ["xs", "sm"]);
 });
 
 test("a control is high enough for a finger", () => {
@@ -86,10 +191,115 @@ test("two cards stand apart, and a card has more room inside than between", () =
   assert.ok(SHAPE.spaces.inside > SHAPE.spaces.between);
 });
 
-test("the focus ring is the brand's blue, and it shows on both grounds", () => {
-  const { color } = SHAPE.ringFocus;
+test("the line of the focus is the strong colour of its ground, and it shows on both grounds", () => {
+  const { colorDark, colorLight } = SHAPE.focus;
 
-  assert.equal(color, COLORS.blue.value);
-  assert.ok(getContrast(color, GROUND_DARK) >= CONTRAST_PARTS);
-  assert.ok(getContrast(color, GROUND_LIGHT) >= CONTRAST_PARTS);
+  assert.equal(colorDark, WORDS_WHITE);
+  assert.equal(colorLight, WORDS_INK);
+  assert.ok(getContrast(colorDark, GROUND_DARK) >= CONTRAST_PARTS);
+  assert.ok(getContrast(colorLight, GROUND_LIGHT) >= CONTRAST_PARTS);
+});
+
+test("the line of the focus is no step of a brand colour", () => {
+  const { colorDark, colorLight } = SHAPE.focus;
+
+  const shades: string[] = Object.values(SHADES).flatMap((scale) =>
+    Object.values(scale),
+  );
+
+  assert.ok(shades.includes(COLORS.blue.value));
+  assert.ok(!shades.includes(colorDark));
+  assert.ok(!shades.includes(colorLight));
+});
+
+test("the soft ring around the line of the focus shows on both grounds, at its share of the colour", () => {
+  const { colorDark, colorLight, ringShare } = SHAPE.focus;
+  const softDark = getBlend(GROUND_DARK, colorDark, ringShare);
+  const softLight = getBlend(GROUND_LIGHT, colorLight, ringShare);
+
+  assert.ok(ringShare > 0 && ringShare < 1);
+  assert.ok(getContrast(softDark, GROUND_DARK) >= CONTRAST_PARTS);
+  assert.ok(getContrast(softLight, GROUND_LIGHT) >= CONTRAST_PARTS);
+});
+
+test("the line of the focus, its soft ring and the outline for forced colours are thin lines", () => {
+  const { focus, lines } = SHAPE;
+
+  assert.equal(focus.width, lines.thin);
+  assert.equal(focus.ringWidth, lines.thin);
+  assert.equal(focus.outlineWidth, lines.thin);
+  assert.ok(focus.outlineOffset > 0);
+});
+
+test("the line of the focus stands out from the fill of a blue button, where the brand's blue did not", () => {
+  const { colorDark, colorLight } = SHAPE.focus;
+  const fill = FILLS.blue.color;
+
+  assert.ok(getContrast(SHAPE.ringFocus.color, fill) < CONTRAST_PARTS);
+  assert.ok(getContrast(colorDark, fill) >= CONTRAST_PARTS);
+  assert.ok(getContrast(colorLight, fill) >= CONTRAST_PARTS);
+});
+
+test("the line of the focus stands out from every fill but a pale one on a dark ground", () => {
+  const { colorDark, colorLight } = SHAPE.focus;
+
+  const weak = IDS.flatMap((id) => [
+    [id, "dark", getContrast(colorDark, FILLS[id].color)] as const,
+    [id, "light", getContrast(colorLight, FILLS[id].color)] as const,
+  ]).filter(([, , contrast]) => contrast < CONTRAST_PARTS);
+
+  // There the line still stands out from the dark ground around it.
+  assert.deepEqual(
+    weak.map(([id, ground]) => [id, ground]),
+    [["yellow", "dark"]],
+  );
+});
+
+test("the older focus ring keeps its values, in the brand's blue", () => {
+  assert.deepEqual(SHAPE.ringFocus, {
+    width: 2,
+    offset: 2,
+    color: COLORS.blue.value,
+  });
+});
+
+test("the README says the sizes of a control, the focus and the older ring as they are", async () => {
+  const readme = await readFile(FILE_README, "utf8");
+  const { focus, ringFocus } = SHAPE;
+  const heights = SIZES_CONTROL.map((size) => SHAPE.heightsControl[size]);
+  const sizes = getList(SIZES_CONTROL);
+
+  const shown = getContrastShown(
+    getContrast(ringFocus.color, FILLS.blue.color),
+  );
+
+  assert.ok(readme.includes(`${getList(heights)} pixels, named ${sizes}`));
+
+  assert.ok(
+    readme.includes(`One size is ${STEP_CONTROL} pixels higher than the one`),
+  );
+
+  assert.ok(
+    readme.includes(`the ${SIDE_LEAST} by ${SIDE_LEAST} pixels that WCAG`),
+  );
+
+  assert.ok(
+    readme.includes(
+      `A line of ${focus.width} pixel, with a soft ring of ${focus.ringWidth} pixel around it`,
+    ),
+  );
+
+  assert.ok(
+    readme.includes(
+      `an outline of ${focus.outlineWidth} pixel stands around the part, ${focus.outlineOffset} pixels away`,
+    ),
+  );
+
+  assert.ok(
+    readme.includes(
+      `${ringFocus.width} pixels thick and ${ringFocus.offset} pixels away`,
+    ),
+  );
+
+  assert.ok(readme.includes(`the two reach ${shown}`));
 });

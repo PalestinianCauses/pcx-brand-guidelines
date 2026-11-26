@@ -2,12 +2,29 @@
 // of one unit. Every value is in pixels.
 
 import COLORS from "./colors";
+import { WORDS_INK, WORDS_WHITE } from "./shades";
 
 // Every space and every height is a multiple of this unit.
 export const UNIT = 4;
 
 // The least height of a part that a finger presses.
 export const HEIGHT_FINGER = 44;
+
+// The least side of a part that a pointer presses. WCAG 2.2 asks for 24 by
+// 24 pixels at its level AA.
+export const SIDE_LEAST = 24;
+
+// A size of a control, under the name that ShadCN gives it.
+export type SizeID = "xs" | "sm" | "default" | "lg";
+
+// The sizes of a control, from the smallest to the largest.
+export const SIZES_CONTROL: SizeID[] = ["xs", "sm", "default", "lg"];
+
+// One size of a control is this much higher than the size before it.
+export const STEP_CONTROL = 8;
+
+// The pointer over a part that can be pressed: the hand, as CSS names it.
+export const POINTER_PRESS = "pointer";
 
 const SHAPE = {
   // The radius of every corner. Buttons, fields, cards and tags are square.
@@ -17,11 +34,36 @@ const SHAPE = {
   // line a screen draws. The thick line marks emphasis.
   lines: { thin: 1, thick: 2 },
 
-  // The height of a button or a field, on every screen.
+  // The height of a button or a field in its default size, on every screen.
   heightControl: 44,
 
-  // The ring around the part that the keyboard is on: how thick it is, how
-  // far from the part it sits, and its colour.
+  // The heights of a control in its four sizes. The default is the height
+  // that a finger needs. The two smaller ones are for a dense screen that is
+  // used with a pointer, and the large one is for the one main action of a
+  // view.
+  heightsControl: { xs: 28, sm: 36, default: 44, lg: 52 },
+
+  // The focus: what a part looks like with the keyboard on it. The line of
+  // the part takes the strong colour of its ground: white on a dark ground
+  // and ink on a light one. It is never a brand colour, so it stands out
+  // from a part in any of them. Around the line stands a soft ring of the
+  // same colour, at a share of its strength. Where a device forces its own
+  // colours, neither can be seen, so an outline stands around the part
+  // there, a little away from it.
+  focus: {
+    width: 1,
+    ringWidth: 1,
+    ringShare: 0.5,
+    colorDark: WORDS_WHITE,
+    colorLight: WORDS_INK,
+    outlineWidth: 1,
+    outlineOffset: 2,
+  },
+
+  /**
+   * @deprecated Use `focus`. A ring in a brand colour can't be told from a
+   * part in that colour.
+   */
   ringFocus: { width: 2, offset: 2, color: COLORS.blue.value },
 
   // The room between things: inside a card, between two cards, between a
