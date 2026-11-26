@@ -20,6 +20,7 @@ The parts arrive one at a time:
 | Hard shadow               | Available |
 | A field                   | Available |
 | The other parts of a form | Available |
+| A message                 | Available |
 | Icons                     | Available |
 | Motion                    | Available |
 | Story, strategy and voice | Available |
@@ -271,7 +272,7 @@ A field that is wrong is pink on a dark, on a light and on the purple ground. It
 
 A wrong field never rests on its colour. An icon and words say what is wrong, on every ground. Only its line and its error take the colour: its label and its hint keep theirs. On the three grounds with the pink, the pink can be told from the words of the ground at a contrast of 3 or more, and a test holds it.
 
-Not here: the colours of a warning, a success and a note, and the wording of an error.
+Not here: the wording of an error. The colours of a warning and of a note are under a message.
 
 ## The other parts of a form
 
@@ -298,7 +299,39 @@ A fill and a mark need a contrast of 3 or more, and a test holds every pair. A c
 - The place of a press reaches past a small control: 12 pixels to each side and 8 above and below. With it the place is larger than the 24 pixels that a pointer needs.
 - The list of a select has the colour of its ground and the line of a field, and it opens 4 pixels under the select. An item is 44 pixels high, as a finger needs. The pointed item has the fill of a quiet button under the pointer, and a line of 2 pixels at its start in the colour of the words on the ground. The chosen item has a tick.
 
-Not here: the message of a whole form, how the list of a select moves in, and the look of a menu and of a dialog.
+Not here: how the list of a select moves in, and the look of a menu and of a dialog. The message of a whole form is under a message.
+
+## A message
+
+`src/message.ts` holds the message: a block that says what happened, or what to mind. It has an icon, a heading and words, and four kinds.
+
+| Kind    | Icon of Lucide   | To a screen reader | Its colour                             |
+| ------- | ---------------- | ------------------ | -------------------------------------- |
+| Wrong   | `circle-alert`   | An alert           | The colour of a thing that is wrong    |
+| Warning | `triangle-alert` | An alert           | Yellow, the brand's colour of a signal |
+| Success | `circle-check`   | A status           | None                                   |
+| Note    | `info`           | A status           | Blue                                   |
+
+A message has a line of 2 pixels at its start, in the colour of its kind, and no box. Only that line and the icon take the colour: the heading and the words keep theirs. The icon is 20 pixels. A success has no colour, since the brand has none that says that a thing went well: its tick and its heading say it.
+
+The heading is set in the step of a button's words, and the words in the step of a note. Both are 15 pixels, so the words are never larger than the heading. The heading leads by its weight and by the strong colour of its ground.
+
+A kind takes its brand colour itself where that stands out from the ground, and the nearest darker step where it does not. On the blue, the pink and the yellow ground no kind has a colour, as a field that is wrong has none there. `getTint` gives the colour of the line and of the icon on every ground, with its contrast against that ground:
+
+| Ground | Wrong                    | Warning                             | Success         | Note                             |
+| ------ | ------------------------ | ----------------------------------- | --------------- | -------------------------------- |
+| Dark   | Pink 500, `#eb3a92`, 5.2 | The brand's yellow, `#ffd84d`, 14.5 | No colour, 20.0 | The brand's blue, `#1f8bff`, 5.8 |
+| Light  | Pink 600, `#ce117a`, 5.0 | Yellow 500, `#a88900`, 3.2          | No colour, 19.2 | The brand's blue, `#1f8bff`, 3.2 |
+| Purple | Pink 400, `#ff4fa3`, 4.5 | The brand's yellow, `#ffd84d`, 10.0 | No colour, 13.8 | The brand's blue, `#1f8bff`, 4.0 |
+| Blue   | No colour, 5.8           | No colour, 5.8                      | No colour, 5.8  | No colour, 5.8                   |
+| Pink   | No colour, 6.6           | No colour, 6.6                      | No colour, 6.6  | No colour, 6.6                   |
+| Yellow | No colour, 14.5          | No colour, 14.5                     | No colour, 14.5 | No colour, 14.5                  |
+
+A line and an icon need a contrast of 3 or more, and a test holds every one. These colours are measured for a line and an icon. They are not measured for words, and no words take them. With no colour, the line and the icon have the colour of the words on the ground.
+
+A message never rests on its colour: its icon and its heading say what kind it is. A message that is wrong or that warns is an alert, and a success and a note are a status. When a message comes onto a page that runs, a screen reader reads an alert at once, and a status when it is free.
+
+Not here: a message that comes and goes at the edge of a page, a button inside a message, and the wording of a message.
 
 ## Icons
 
