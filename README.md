@@ -8,26 +8,27 @@ Other PCX projects read the brand from here. The design system package builds it
 
 The parts arrive one at a time:
 
-| Part                      | Status    |
-| ------------------------- | --------- |
-| Colours and greys         | Available |
-| Shades and tints          | Available |
-| Fills of a main button    | Available |
-| Fonts                     | Available |
-| Logo                      | Available |
-| Type scale                | Available |
-| Shape, lines and spacing  | Available |
-| Hard shadow               | Available |
-| A field                   | Available |
-| The other parts of a form | Available |
-| A message                 | Available |
-| A badge                   | Available |
-| A card                    | Available |
-| A link                    | Available |
-| Icons                     | Available |
-| Motion                    | Available |
-| Story, strategy and voice | Available |
-| The look                  | Available |
+| Part                        | Status    |
+| --------------------------- | --------- |
+| Colours and greys           | Available |
+| Shades and tints            | Available |
+| Fills of a main button      | Available |
+| Fonts                       | Available |
+| Logo                        | Available |
+| Type scale                  | Available |
+| Shape, lines and spacing    | Available |
+| Hard shadow                 | Available |
+| A field                     | Available |
+| The other parts of a form   | Available |
+| A message                   | Available |
+| A badge                     | Available |
+| A card                      | Available |
+| A link                      | Available |
+| The parts that hold content | Available |
+| Icons                       | Available |
+| Motion                      | Available |
+| Story, strategy and voice   | Available |
+| The look                    | Available |
 
 ## Colours
 
@@ -421,6 +422,22 @@ A link is words, so it needs a contrast of 4.5 or more, and a test holds every o
 A link keeps the type of the words around it: their size, their weight and their line height. With the keyboard on it, it has the line of the focus around it, 1 pixel wide and 2 pixels away. It has no look of its own once it was visited.
 
 Not here: a link in the top bar and in the menu, the link that skips to the content of a page, and a sign for a link that leaves the website.
+
+## The parts that hold content
+
+`src/content.ts` holds three parts: the sheet of points, the numbered row and the separator. A card holds one thing that is pressed as a whole, and a page is not built from cards. These parts are what a page is built from. None of them is pressed, and none has a fill.
+
+They add no colour. Their titles and their words have the colours of the words on their ground, and their lines are the thin line of that ground, 1 pixel thick.
+
+**The sheet of points.** `POINTS` holds short statements in cells that thin lines divide. It is a list. A cell has 24 pixels of room, and 8 pixels between its title and its words. The lines run between the cells only. So a sheet is open at its edges, where it joins the lines of the page around it, and it can't be taken for a set of cards.
+
+**The numbered row.** `ROWS` holds a step or a thing in an order: a number, a title and a line of words. Its list is an ordered list, which counts its rows itself. Its number has 2 digits, as in 01, and it is set in the step of a label, in the mono font. `getNumber` writes it. The number stands in a column of its own, beside the title. So the numbers stand under each other, and the title and the words line up at one edge. A row has a thin line above it, 24 pixels of room above it and under it, and 24 pixels between its number and its title.
+
+**The separator.** `SEPARATOR` holds a thin line between two groups, lying or standing. A screen reader skips it, unless a project says that it carries meaning.
+
+The title of a point and of a row is set in the step of a sub-heading, and the words under it in the step of running text. So the words are never larger than the title.
+
+Not here: the table, tabs and the accordion, and a picture in a row. The logo has a part of its own, further up.
 
 ## Icons
 
