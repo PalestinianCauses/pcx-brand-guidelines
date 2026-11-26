@@ -2,13 +2,28 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-import COLORS, { type ColorID, GROUND_DARK, GROUND_LIGHT } from "./colors";
+import COLORS, {
+  type ColorID,
+  GROUND_DARK,
+  GROUND_LIGHT,
+  type GroundsID,
+  GROUNDS,
+  SLATE,
+} from "./colors";
 import getContrast, {
   CONTRAST_PARTS,
   CONTRAST_WORDS,
   getContrastShown,
 } from "./contrast";
-import FILLS, { COLOR_ACTION, COLORS_PALE, type Fill, getFill } from "./fills";
+import FILLS, {
+  COLOR_ACTION,
+  COLORS_PALE,
+  type Fill,
+  getFill,
+  getFillsClear,
+  getMainFill,
+  SHARES_QUIET,
+} from "./fills";
 import SHADES, {
   getStep,
   getWords,
@@ -211,4 +226,114 @@ test("the README says how far the weak pairs fall, as they are measured", async 
   );
 
   assert.ok(readme.includes(`A fill is step ${STEP_WHITE} of its scale`));
+});
+
+// Every ground, and the four in a brand colour.
+const IDS_GROUND = Object.keys(GROUNDS) as GroundsID[];
+const IDS_COLOR: GroundsID[] = IDS;
+
+test("the six grounds are the darkest grey, the lightest grey and the four brand colours", () => {
+  assert.deepEqual(IDS_GROUND, ["dark", "light", ...IDS]);
+  assert.equal(GROUNDS.dark, GROUND_DARK);
+  assert.equal(GROUNDS.light, GROUND_LIGHT);
+
+  IDS.forEach((id) => {
+    assert.equal(GROUNDS[id], COLORS[id].value, id);
+  });
+});
+
+test("no fill in a brand colour stands out from the blue or from the pink ground, and only the yellow one from the purple ground", () => {
+  const clear = Object.fromEntries(
+    IDS_GROUND.map((ground) => [ground, getFillsClear(ground)]),
+  );
+
+  assert.deepEqual(clear, {
+    dark: ["purple", "blue", "pink", "yellow"],
+    light: ["purple", "blue", "pink"],
+    purple: ["yellow"],
+    blue: [],
+    pink: [],
+    yellow: ["purple", "blue", "pink"],
+  });
+
+  IDS_GROUND.forEach((ground) => {
+    IDS.forEach((id) => {
+      const reaches =
+        getContrast(FILLS[id].color, GROUNDS[ground]) >= CONTRAST_PARTS;
+
+      assert.equal(getFillsClear(ground).includes(id), reaches, ground);
+    });
+  });
+});
+
+test("the main button is the brand's colour of an action on the dark and on the light ground, and the colour of the words on a ground in a brand colour", () => {
+  const { color, colorHover, words } = FILLS[COLOR_ACTION];
+
+  assert.deepEqual(getMainFill("dark"), { color, colorHover, words });
+  assert.deepEqual(getMainFill("light"), { color, colorHover, words });
+
+  assert.deepEqual(getMainFill("purple"), {
+    color: WORDS_WHITE,
+    colorHover: SLATE[200],
+    words: WORDS_INK,
+  });
+
+  IDS_COLOR.filter((ground) => ground !== "purple").forEach((ground) => {
+    assert.deepEqual(
+      getMainFill(ground),
+      { color: WORDS_INK, colorHover: SLATE[800], words: WORDS_WHITE },
+      ground,
+    );
+  });
+});
+
+test("the main button stands out from every ground at rest and under the pointer, and its words can be read", () => {
+  IDS_GROUND.forEach((ground) => {
+    const main = getMainFill(ground);
+
+    assert.ok(getContrast(main.color, GROUNDS[ground]) >= CONTRAST_PARTS);
+    assert.ok(getContrast(main.colorHover, GROUNDS[ground]) >= CONTRAST_PARTS);
+    assert.ok(getContrast(main.words, main.color) >= CONTRAST_WORDS, ground);
+    assert.ok(getContrast(main.words, main.colorHover) >= CONTRAST_WORDS);
+  });
+});
+
+test("a quiet fill keeps its shares, from the strongest to the weakest", () => {
+  assert.deepEqual(SHARES_QUIET, {
+    rest: [8, 6, 4],
+    pointer: [12, 10, 8],
+    mixed: 5,
+  });
+
+  [SHARES_QUIET.rest, SHARES_QUIET.pointer].forEach((shares) => {
+    assert.deepEqual(
+      [...shares].sort((one, two) => two - one),
+      [...shares],
+    );
+  });
+});
+
+test("the README says which fill stands out from which ground, and the main button of every ground, as they are measured", async () => {
+  const readme = (await readFile(FILE_README, "utf8")).replace(
+    PATTERN_SPACES,
+    " ",
+  );
+
+  IDS_GROUND.forEach((ground) => {
+    const name = `${ground.charAt(0).toUpperCase()}${ground.slice(1)}`;
+    const main = getMainFill(ground);
+
+    const cells = IDS.map((id) => {
+      const contrast = getContrast(FILLS[id].color, GROUNDS[ground]);
+      const answer = contrast >= CONTRAST_PARTS ? "Yes" : "No";
+
+      return `${answer}, ${getContrastShown(contrast)}`;
+    });
+
+    const row = `| ${name} | ${cells.join(" | ")} |`;
+    const rowMain = `| ${name} | \`${main.color}\` | \`${main.colorHover}\` | \`${main.words}\` | ${getContrastShown(getContrast(main.color, GROUNDS[ground]))} |`;
+
+    assert.ok(readme.includes(row), row);
+    assert.ok(readme.includes(rowMain), rowMain);
+  });
 });

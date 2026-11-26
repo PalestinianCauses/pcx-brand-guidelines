@@ -6,12 +6,14 @@ import COLORS, {
   type ColorID,
   GROUND_DARK,
   GROUND_LIGHT,
+  type GroundsID,
+  GROUNDS as GROUNDS_NAMED,
   SLATE,
 } from "./colors";
 import getContrast, { CONTRAST_PARTS, getContrastShown } from "./contrast";
-import FILLS from "./fills";
+import FILLS, { getMainFill } from "./fills";
 import { WORDS_INK } from "./shades";
-import SHADOW, { getLines } from "./shadow";
+import SHADOW, { getLines, getLinesOn } from "./shadow";
 import SHAPE, { UNIT } from "./shape";
 
 const FILE_README = "README.md";
@@ -148,4 +150,57 @@ test("the README shows the hard shadow as it is", async () => {
       `against the purple and the pink fill on a light ground, at ${purple} and ${pink}`,
     ),
   );
+});
+
+test("on a ground in a brand colour the lines are ink where the words are ink, and the lines of a dark ground on the purple one", () => {
+  const { colorDark, colorLight, colorPale } = SHADOW;
+  const blue = FILLS.blue.color;
+  const yellow = FILLS.yellow.color;
+
+  assert.equal(getLinesOn(blue, "dark"), getLines(blue, "dark"));
+  assert.equal(getLinesOn(blue, "light"), getLines(blue, "light"));
+  assert.equal(getLinesOn(yellow, "dark"), colorPale);
+
+  assert.equal(getLinesOn(blue, "purple"), colorDark);
+  assert.equal(getLinesOn(yellow, "purple"), colorPale);
+
+  (["blue", "pink", "yellow"] as GroundsID[]).forEach((ground) => {
+    assert.equal(getLinesOn(blue, ground), colorLight, ground);
+    assert.equal(getLinesOn(yellow, ground), colorLight, ground);
+  });
+});
+
+test("beside the main button of a ground in a brand colour the lines are the plain lines of the ground, and they stand out from it", () => {
+  const { colorDark, colorLight } = SHADOW;
+  const grounds = Object.keys(COLORS) as GroundsID[];
+
+  grounds.forEach((ground) => {
+    const main = getMainFill(ground);
+    const lines = getLinesOn(main.color, ground);
+
+    assert.equal(lines, ground === "purple" ? colorDark : colorLight, ground);
+    assert.ok(getContrast(lines, GROUNDS_NAMED[ground]) >= CONTRAST_PARTS);
+
+    // The lines have the colour of the button, or one close to it. The
+    // band reads because it is hatched.
+    assert.ok(getContrast(lines, main.color) < CONTRAST_PARTS, ground);
+  });
+});
+
+test("the lines beside a pale part fall just under what a part needs on the purple ground, where the part itself stands out", () => {
+  const yellow = FILLS.yellow.color;
+  const lines = getLinesOn(yellow, "purple");
+
+  assert.ok(getContrast(lines, GROUNDS_NAMED.purple) < CONTRAST_PARTS);
+  assert.ok(getContrast(yellow, GROUNDS_NAMED.purple) >= CONTRAST_PARTS);
+  assert.ok(getContrast(lines, yellow) >= CONTRAST_PARTS);
+});
+
+test("the README says the lines on a ground in a brand colour, as they are measured", async () => {
+  const readme = await readFile(FILE_README, "utf8");
+  const lines = getLinesOn(FILLS.yellow.color, "purple");
+  const shown = getContrastShown(getContrast(lines, GROUNDS_NAMED.purple));
+
+  assert.ok(readme.includes("Ink on the blue, the pink and the yellow ground"));
+  assert.ok(readme.includes(`reach ${shown} against the purple ground`));
 });

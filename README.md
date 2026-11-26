@@ -18,6 +18,7 @@ The parts arrive one at a time:
 | Type scale                | Available |
 | Shape, lines and spacing  | Available |
 | Hard shadow               | Available |
+| A field                   | Available |
 | Icons                     | Available |
 | Motion                    | Available |
 | Story, strategy and voice | Available |
@@ -100,7 +101,35 @@ import { FILLS } from "@pcx.agency/brand-guidelines";
 const { color, colorHover, words } = FILLS.blue;
 ```
 
-Not here: the quiet kinds of a button, when a page uses which of the four colours, and a colour for a thing that deletes.
+### On a ground in a brand colour
+
+A fill in a brand colour stands out from a ground when the two reach a contrast of 3. `getFillsClear` names the fills that do, by the name of the ground:
+
+| Ground | Purple   | Blue     | Pink     | Yellow    |
+| ------ | -------- | -------- | -------- | --------- |
+| Dark   | Yes, 4.0 | Yes, 4.2 | Yes, 3.8 | Yes, 14.5 |
+| Light  | Yes, 4.6 | Yes, 4.5 | Yes, 5.0 | No, 1.2   |
+| Purple | No, 2.8  | No, 2.8  | No, 2.6  | Yes, 10.0 |
+| Blue   | No, 1.4  | No, 1.2  | No, 1.5  | No, 2.4   |
+| Pink   | No, 1.5  | No, 1.5  | No, 1.6  | No, 2.2   |
+| Yellow | Yes, 3.5 | Yes, 3.4 | Yes, 3.8 | No, 1.0   |
+
+No fill in a brand colour stands out from the blue or from the pink ground, and only the yellow one stands out from the purple ground. So the main button of a ground in a brand colour is no brand colour. It has the colour of the words on that ground: ink with white words on the blue, the pink and the yellow ground, and white with ink words on the purple one. Under the pointer it is the grey one step from its fill. `getMainFill` gives the main button of every ground:
+
+| Ground | Fill      | Under the pointer | Words     | Against the ground |
+| ------ | --------- | ----------------- | --------- | ------------------ |
+| Dark   | `#0072dc` | `#005cb3`         | `#ffffff` | 4.2                |
+| Light  | `#0072dc` | `#005cb3`         | `#ffffff` | 4.5                |
+| Purple | `#ffffff` | `#e2e8f0`         | `#020618` | 13.8               |
+| Blue   | `#020618` | `#1d293d`         | `#ffffff` | 5.8                |
+| Pink   | `#020618` | `#1d293d`         | `#ffffff` | 6.6                |
+| Yellow | `#020618` | `#1d293d`         | `#ffffff` | 14.5               |
+
+A button in a brand colour belongs on a ground in a brand colour only where the first table says yes.
+
+The quiet kinds of a button take a share of the colour of the words on such a ground. A secondary button takes 8 parts in a hundred of it at rest, and an outline and a ghost button take 12 under the pointer. Where the words on such a fill would fall under 4.5, a ground takes the next weaker share. `SHARES_QUIET` holds the shares.
+
+Not here: when a page uses which of the four colours, and a colour for a thing that deletes.
 
 ## Fonts
 
@@ -181,6 +210,8 @@ A control has four sizes, under the names that ShadCN gives them. One size is 8 
 
 The focus is what a part looks like with the keyboard on it. The line of the part takes the strong colour of its ground: white on a dark ground, and ink on a light one. It is never a brand colour, so it is not taken for a part in one of them. It stands out from the fill of every main button but one. Against the yellow fill on a dark ground the white line reaches 1.2, and there it stands out from the dark ground around it. Around the line stands a soft ring of the same colour, at half its strength. A test measures the line and the soft ring on the darkest and on the lightest grey: a part that is not words needs a contrast of 3 or more. Where a device forces its own colours, an outline of 1 pixel stands around the part, 2 pixels away.
 
+On a ground in a brand colour the line of the focus has the colour of the words on that ground: white on purple, and ink on the other three. The main button of such a ground has that very colour, so nobody could see the line on its edge. There a line of 1 pixel stands around the part, 2 pixels away, in the colour of the line, with no soft ring. Against the ground that line reaches 13.8 on purple, 5.8 on blue, 6.6 on pink and 14.5 on yellow. `getFocusColor` gives the colour on any ground, and `isFocusAround` says where the line stands around a part.
+
 Before v2.3.0 the focus was a ring in the brand's blue, 2 pixels thick and 2 pixels away. On a blue button it was hard to tell from the button: the two reach 1.2. The name `ringFocus` is still there, with those values. It is marked as deprecated, and it leaves with the next major version.
 
 Between a phone and a laptop, the room around a section grows evenly with the screen, as a size does. `getScaled` gives a value for any width.
@@ -211,7 +242,35 @@ The focus and the hard shadow never meet: a part with the keyboard on it has no 
 
 Tests measure the lines against both grounds, and against the fill of every main button. Each pair reaches 3 at rest. Under the pointer, the lines fall a little under 3 against the purple and the pink fill on a light ground, at 2.8 and 2.6. The lines still stand out from the ground there, and so does the button.
 
-Not here: a hard shadow on a ground in a brand colour.
+On a ground in a brand colour the lines follow the words of the ground. Ink on the blue, the pink and the yellow ground, and the lines of a dark ground on the purple one. `getLinesOn` gives them by the name of the ground. Beside the main button of such a ground the lines have the colour of the button, or one close to it. The band still reads, because it is hatched and the button is not. The darker lines beside a pale part reach 2.8 against the purple ground, under the 3 that a part needs. The yellow button stands out from that ground itself, and the lines stand out from the button.
+
+## A field
+
+`src/field.ts` says what is a field's own. A field is a control that a person types in, with its label, its hint and its error. Its height is the height of a control, its corners are square, and its focus is the focus of every part.
+
+| Part of a field           | Step of the type scale | What that is                        |
+| ------------------------- | ---------------------- | ----------------------------------- |
+| Label                     | Button                 | Gilroy at 15 pixels and weight 600  |
+| Words that a person types | Body                   | Gilroy at 16 pixels, 18 on a laptop |
+| Hint                      | Note                   | Gilroy at 15 pixels                 |
+| Error                     | Note                   | Gilroy at 15 pixels                 |
+
+A label is shown as it is written, in sentence case. The words in a field are never smaller than 16 pixels: under that, a phone zooms in on a field that takes the keyboard.
+
+A field that is wrong is pink on a dark, on a light and on the purple ground. Its pink is the step nearest to 600 in which words can be read on that ground. On the blue, the pink and the yellow ground it has no colour. There its line has the colour of the words on the ground and is 1 pixel thicker. `getWrong` gives a wrong field on every ground:
+
+| Ground | A field that is wrong | Against the ground | Its line |
+| ------ | --------------------- | ------------------ | -------- |
+| Dark   | Pink 500, `#eb3a92`   | 5.2                | 1 pixel  |
+| Light  | Pink 600, `#ce117a`   | 5.0                | 1 pixel  |
+| Purple | Pink 400, `#ff4fa3`   | 4.5                | 1 pixel  |
+| Blue   | No colour             | 5.8                | 2 pixels |
+| Pink   | No colour             | 6.6                | 2 pixels |
+| Yellow | No colour             | 14.5               | 2 pixels |
+
+A wrong field never rests on its colour. An icon and words say what is wrong, on every ground. Only its line and its error take the colour: its label and its hint keep theirs. On the three grounds with the pink, the pink can be told from the words of the ground at a contrast of 3 or more, and a test holds it.
+
+Not here: the colours of a warning, a success and a note, the wording of an error, and the other parts of a form.
 
 ## Icons
 

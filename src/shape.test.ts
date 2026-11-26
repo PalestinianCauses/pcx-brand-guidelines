@@ -2,12 +2,20 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-import COLORS, { type ColorID, GROUND_DARK, GROUND_LIGHT } from "./colors";
+import COLORS, {
+  type ColorID,
+  GROUND_DARK,
+  GROUND_LIGHT,
+  type GroundsID,
+  GROUNDS,
+} from "./colors";
 import getContrast, { CONTRAST_PARTS, getContrastShown } from "./contrast";
-import FILLS from "./fills";
+import FILLS, { getMainFill } from "./fills";
 import SHADES, { WORDS_INK, WORDS_WHITE } from "./shades";
 import SHAPE, {
+  getFocusColor,
   HEIGHT_FINGER,
+  isFocusAround,
   POINTER_PRESS,
   SIDE_LEAST,
   SIZES_CONTROL,
@@ -318,4 +326,62 @@ test("the README says the sizes of a control, the focus and the older ring as th
   );
 
   assert.ok(readme.includes(`the two reach ${shown}`));
+});
+
+test("on every ground the line of the focus has the colour of the words on that ground, and it stands out from the ground", () => {
+  const grounds = Object.keys(GROUNDS) as GroundsID[];
+
+  assert.equal(getFocusColor("dark"), SHAPE.focus.colorDark);
+  assert.equal(getFocusColor("light"), SHAPE.focus.colorLight);
+  assert.equal(getFocusColor("purple"), WORDS_WHITE);
+
+  (["blue", "pink", "yellow"] as GroundsID[]).forEach((ground) => {
+    assert.equal(getFocusColor(ground), WORDS_INK, ground);
+  });
+
+  grounds.forEach((ground) => {
+    assert.ok(
+      getContrast(getFocusColor(ground), GROUNDS[ground]) >= CONTRAST_PARTS,
+      ground,
+    );
+  });
+});
+
+test("the line of the focus stands around the main button of a ground in a brand colour, and around no other button", () => {
+  const grounds = Object.keys(GROUNDS) as GroundsID[];
+
+  grounds.forEach((ground) => {
+    const isColor = ground !== "dark" && ground !== "light";
+    const main = getMainFill(ground);
+
+    assert.equal(isFocusAround(main.color, ground), isColor, ground);
+
+    // A button in a brand colour keeps the line on its edge.
+    IDS.forEach((id) => {
+      assert.equal(isFocusAround(FILLS[id].color, ground), false, ground);
+    });
+  });
+
+  assert.equal(isFocusAround("#FFFFFF", "purple"), true);
+});
+
+test("the README says where the line of the focus stands around a part, as it is measured", async () => {
+  const readme = await readFile(FILE_README, "utf8");
+  const { outlineOffset, outlineWidth } = SHAPE.focus;
+
+  const shown = (["purple", "blue", "pink", "yellow"] as GroundsID[]).map(
+    (ground) =>
+      getContrastShown(getContrast(getFocusColor(ground), GROUNDS[ground])),
+  );
+
+  assert.ok(
+    readme.includes(
+      `a line of ${outlineWidth} pixel stands around the part, ${outlineOffset} pixels away, in the colour of the line`,
+    ),
+  );
+  assert.ok(
+    readme.includes(
+      `${shown[0]} on purple, ${shown[1]} on blue, ${shown[2]} on pink and ${shown[3]} on yellow`,
+    ),
+  );
 });
