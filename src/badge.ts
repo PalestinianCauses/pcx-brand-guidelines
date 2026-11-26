@@ -45,9 +45,10 @@ const BADGE = {
   // The step of its scale that the soft fill of a state takes: a deep one
   // on the dark ground, and a pale one on the light ground. A pale colour
   // has the pale step as its own, so that step would be the colour in
-  // full: on the light ground it takes the palest step.
-  steps: { deep: 900, pale: 100, palest: 50 } as Record<
-    "deep" | "pale" | "palest",
+  // full: on the light ground it takes the palest step. The light step is
+  // for the icon and the line of a state on a deep fill.
+  steps: { deep: 900, light: 300, pale: 100, palest: 50 } as Record<
+    "deep" | "light" | "pale" | "palest",
     ShadeStep
   >,
 } as const;
@@ -128,6 +129,30 @@ const getOnFill = function getOnFill(
   return tone;
 };
 
+// The colour of a state where it stands on a deep fill of its own colour:
+// the light step of its scale, or the colour that a message of that kind
+// has on the ground where that is the lighter of the two. A colour of
+// middle lightness looks weak on a deep fill of its own colour, also where
+// what was measured is enough for a part. So the icon is lighter there.
+const getOnDeep = function getOnDeep(
+  color: string,
+  source: ColorID,
+  step: ShadeStep | undefined,
+): [string, ShadeStep | undefined] {
+  const { light } = BADGE.steps;
+  const lighter = SHADES[source][light];
+
+  // A lighter colour stands out less from white.
+  const isLighter =
+    getContrast(lighter, WORDS_WHITE) < getContrast(color, WORDS_WHITE);
+
+  const tone: [string, ShadeStep | undefined] = isLighter
+    ? [lighter, light]
+    : [color, step];
+
+  return tone;
+};
+
 // The step of the soft fill of a colour on a ground.
 const getSoft = function getSoft(
   source: ColorID,
@@ -159,7 +184,8 @@ const getSoft = function getSoft(
 //
 // The icon takes the colour that a message of that kind has on the ground
 // where that stands out from the fill, and a darker step where it does
-// not.
+// not. On the deep fill of the dark ground it takes the light step of its
+// scale, where that is lighter than the colour of the state.
 export const getBadge = function getBadge(
   kind: BadgesID,
   ground: GroundsID,
@@ -186,7 +212,13 @@ export const getBadge = function getBadge(
   const isSoft = GROUNDS_SOFT.includes(ground);
   const stepFill = isSoft ? getSoft(source, ground) : undefined;
   const fill = stepFill === undefined ? quiet : SHADES[source][stepFill];
-  const [icon, darker] = getOnFill(tint.color, source, fill);
+  const [found, darker] = getOnFill(tint.color, source, fill);
+  const stepFound = found === tint.color ? tint.step : darker;
+
+  const [icon, stepIcon] =
+    stepFill === BADGE.steps.deep
+      ? getOnDeep(found, source, stepFound)
+      : [found, stepFound];
 
   const badge = {
     fill,
@@ -195,7 +227,7 @@ export const getBadge = function getBadge(
     line: isSoft ? icon : undefined,
     source,
     stepFill,
-    stepIcon: icon === tint.color ? tint.step : darker,
+    stepIcon,
   };
 
   return badge;

@@ -103,7 +103,12 @@ test("a badge keeps its values, and its words are set as the label of a field is
   assert.equal(BADGE.icon, 14);
   assert.equal(BADGE.gap, 6);
   assert.equal(BADGE.line, SHAPE.lines.thin);
-  assert.deepEqual(BADGE.steps, { deep: 900, pale: 100, palest: 50 });
+  assert.deepEqual(BADGE.steps, {
+    deep: 900,
+    light: 300,
+    pale: 100,
+    palest: 50,
+  });
   assert.deepEqual(GROUNDS_SOFT, ["dark", "light"]);
 
   const words = TYPE[BADGE.type];
@@ -190,7 +195,6 @@ test("on the dark and on the light ground a state that has a colour has a soft f
   );
 
   const yellow = COLORS.yellow.value;
-  const blue = COLORS.blue.value;
 
   const getSoft = (
     source: ColorID,
@@ -207,15 +211,33 @@ test("on the dark and on the light ground a state that has a colour has a soft f
 
   assert.deepEqual(badges, {
     dark: [
-      getSoft("pink", 900, SHADES.pink[500], 500),
+      getSoft("pink", 900, SHADES.pink[300], 300),
       getSoft("yellow", 900, yellow, undefined),
-      getSoft("blue", 900, blue, undefined),
+      getSoft("blue", 900, SHADES.blue[300], 300),
     ],
     light: [
       getSoft("pink", 100, SHADES.pink[600], 600),
       getSoft("yellow", 50, SHADES.yellow[500], 500),
       getSoft("blue", 100, SHADES.blue[600], 600),
     ],
+  });
+
+  // On the deep fill of the dark ground the icon and the line take the
+  // light step of their scale, where that is lighter than the colour of
+  // the state: the colour that a message has there stands out too little
+  // from a deep fill of its own colour. The brand's yellow is lighter than
+  // that step, so it stays. Every one then reaches what words need.
+  COLORED.forEach((kind) => {
+    const { fill, icon = "", stepIcon } = getBadge(kind, "dark");
+    const tint = getTint(kind, "dark");
+
+    assert.ok(getContrast(icon, fill) >= CONTRAST_WORDS, kind);
+    assert.ok(getContrast(icon, fill) >= getContrast(tint.color, fill), kind);
+    assert.equal(
+      stepIcon === BADGE.steps.light,
+      getContrast(tint.color, fill) < CONTRAST_WORDS,
+      kind,
+    );
   });
 
   // A pale colour has the pale step as its own, so it takes the palest
@@ -422,6 +444,7 @@ test("the README shows the badge and the card of every ground, with what was mea
     `a line of ${BADGE.line} pixel in the colour of its icon`,
     `step ${BADGE.steps.deep} on the dark ground and step ${BADGE.steps.pale} on the light ground`,
     `A pale colour takes step ${BADGE.steps.palest} on the light ground`,
+    `it takes step ${BADGE.steps.light} of its scale, where that is lighter than the colour of the state`,
     `${purple[0]}, ${purple[1]} and ${purple[2]}`,
     CARD.use,
     ...CARD.limits,
