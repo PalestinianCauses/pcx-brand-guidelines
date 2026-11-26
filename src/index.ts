@@ -2,6 +2,9 @@
 // its name, so that the built code names every export where Node can read
 // it.
 
+import BADGE, { getBadge, getQuiet, GROUNDS_SOFT } from "./badge";
+import getBlend from "./blend";
+import CARD, { getCard } from "./card";
 import COLORS, { GROUND_DARK, GROUND_LIGHT, GROUNDS, SLATE } from "./colors";
 import getContrast, {
   CONTRAST_PARTS,
@@ -69,6 +72,8 @@ import TYPE, {
 } from "./type";
 import VOICE, { WORDS_HYPE } from "./voice";
 
+export type { Badge, BadgesID } from "./badge";
+export type { Card } from "./card";
 export type { Color, ColorID, GroundsID } from "./colors";
 export type { PartField, Wrong } from "./field";
 export type { Fill, MainFill } from "./fills";
@@ -88,6 +93,8 @@ export type { Leading, TypeStep, TypeStepID } from "./type";
 export type { VoiceLayer, VoicePlace, VoicePoint } from "./voice";
 
 export {
+  BADGE,
+  CARD,
   COLOR_ACTION,
   COLOR_WRONG,
   COLORS,
@@ -101,6 +108,9 @@ export {
   FILLS,
   FONTS,
   FORM,
+  getBadge,
+  getBlend,
+  getCard,
   getColor,
   getContrast,
   getContrastShown,
@@ -114,6 +124,7 @@ export {
   getMainFill,
   getOklch,
   getOn,
+  getQuiet,
   getTint,
   getScaled,
   getShades,
@@ -126,6 +137,7 @@ export {
   GROUND_LIGHT,
   GROUNDS,
   GROUNDS_ORDER,
+  GROUNDS_SOFT,
   GROUNDS_TINTED,
   GROUNDS_WRONG,
   HEIGHT_FINGER,

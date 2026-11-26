@@ -21,6 +21,8 @@ The parts arrive one at a time:
 | A field                   | Available |
 | The other parts of a form | Available |
 | A message                 | Available |
+| A badge                   | Available |
+| A card                    | Available |
 | Icons                     | Available |
 | Motion                    | Available |
 | Story, strategy and voice | Available |
@@ -332,6 +334,69 @@ A line and an icon need a contrast of 3 or more, and a test holds every one. The
 A message never rests on its colour: its icon and its heading say what kind it is. A message that is wrong or that warns is an alert, and a success and a note are a status. When a message comes onto a page that runs, a screen reader reads an alert at once, and a status when it is free.
 
 Not here: a message that comes and goes at the edge of a page, a button inside a message, and the wording of a message.
+
+## A badge
+
+`src/badge.ts` holds the badge: one or two words that mark a state or a kind. It is 24 pixels high, with 8 pixels of room before and after its words, and it is not pressed. Its words are set in the step of a button's words, as the label of a field is.
+
+A badge has five kinds: a plain one, which marks a kind of thing, and one for each kind of a message, which marks a state. A badge of a state has the icon of that state before its words, the icon that a message of that kind has, at 14 pixels. So a badge never rests on its colour: its icon and its words say the state. The words keep the colour of the words on the ground, whatever the kind is.
+
+A plain badge has a quiet fill. `getQuiet` gives it on every ground, as a solid colour, with the contrast of the words on it:
+
+| Ground | Quiet fill | Words on it |
+| ------ | ---------- | ----------- |
+| Dark   | `#1d293d`  | 14.6        |
+| Light  | `#e2e8f0`  | 16.2        |
+| Purple | `#3f2c7d`  | 11.2        |
+| Blue   | `#1d80ed`  | 5.0         |
+| Pink   | `#eb4998`  | 5.6         |
+| Yellow | `#ebc749`  | 12.2        |
+
+On the dark and on the light ground it is a step of the greys. On a ground in a brand colour it is the colour of the words at the share of a quiet button. `getBlend` writes one colour on another at a share as the one solid colour that a screen shows, so nothing shows through such a fill.
+
+On the dark and on the light ground a badge of a state that has a colour has a soft fill in that colour, and a line of 1 pixel in the colour of its icon. The fill is one step of the scale of the colour: step 900 on the dark ground and step 100 on the light ground. A pale colour takes step 50 on the light ground, since its step 100 is the colour in full. A deep fill can't carry its colour alone on the dark ground, so the line carries it, and the light ground has the same line. `getBadge` gives the fill, the words, the icon and the line of every kind on every ground:
+
+| Ground | Kind    | Soft fill             | Words on it | Icon and line                 | Against the fill | Against the ground |
+| ------ | ------- | --------------------- | ----------- | ----------------------------- | ---------------- | ------------------ |
+| Dark   | Wrong   | Pink 900, `#610036`   | 13.4        | Pink 500, `#eb3a92`           | 3.5              | 5.2                |
+| Dark   | Warning | Yellow 900, `#3e3100` | 12.6        | The brand's yellow, `#ffd84d` | 9.2              | 14.5               |
+| Dark   | Note    | Blue 900, `#003267`   | 12.6        | The brand's blue, `#1f8bff`   | 3.6              | 5.8                |
+| Light  | Wrong   | Pink 100, `#ffd9e6`   | 15.6        | Pink 600, `#ce117a`           | 4.0              | 5.0                |
+| Light  | Warning | Yellow 50, `#fff2c6`  | 18.0        | Yellow 500, `#a88900`         | 3.0              | 3.2                |
+| Light  | Note    | Blue 100, `#d4e7ff`   | 16.0        | Blue 600, `#0072dc`           | 3.6              | 4.5                |
+
+Words need a contrast of 4.5 or more, and an icon and a line need 3. A test holds every one. The icon takes the colour that a message of that kind has on the ground where that stands out from the fill, and the first darker step where it does not.
+
+A success has no colour, as in a message, and a plain badge marks no state. Both have the quiet fill and no line, on every ground. On the purple ground a state keeps the quiet fill, and its icon alone has its colour: Pink 400 at 3.6, the brand's yellow at 8.0 and the brand's blue at 3.2. On the blue, the pink and the yellow ground no state has a colour, and the icon has the colour of the words.
+
+Not here: a badge that can be pressed or removed, a number in a badge, and the wording of a badge.
+
+## A card
+
+`src/card.ts` holds the card: a square block with a head, a body and a foot.
+
+A card is one element of a design, and it has one job. A card holds a piece of content that is one thing: mostly one that is pressed as a whole, such as a service or a case. What a card is not for:
+
+- A card is no tool for laying out a page. Spacing, columns and sections are the work of the structure of a page.
+- A page is not built from cards. Most content stands on its ground, in blocks that thin lines divide.
+- A card does not stand inside a card.
+
+A card has a thin line around it and a solid fill, on every ground. So the grid of a page does not show through it, and its words stand on what was measured. It has 24 pixels of room, and 24 pixels between its parts. Its heading is set in the step of a sub-heading and its words in the step of running text, so the words are never larger than the heading.
+
+A card that can be pressed is one link as a whole. It has an arrow of 20 pixels after its heading, so that it shows without a pointer. Under the pointer its line takes the colour of the words on the ground, and its fill stays. `getCard` gives the fill, the line and the words on every ground, with the contrast of the heading and of the words on the fill, and of the line under the pointer against the ground:
+
+| Ground | Fill      | Line      | Words     | Heading on the fill | Words on the fill | Line under the pointer |
+| ------ | --------- | --------- | --------- | ------------------- | ----------------- | ---------------------- |
+| Dark   | `#0f172b` | `#1d293d` | `#90a1b9` | 17.8                | 6.6               | `#ffffff`, 20.0        |
+| Light  | `#ffffff` | `#cad5e2` | `#45556c` | 20.0                | 7.5               | `#020618`, 19.2        |
+| Purple | `#3f2c7d` | `#4b3a86` | `#e8e6ef` | 11.2                | 9.0               | `#ffffff`, 13.8        |
+| Blue   | `#1d80ed` | `#1970d1` | `#020618` | 5.0                 | 5.0               | `#020618`, 5.8         |
+| Pink   | `#eb4998` | `#cc4087` | `#020618` | 5.6                 | 5.6               | `#020618`, 6.6         |
+| Yellow | `#ebc749` | `#ccae42` | `#020618` | 12.2                | 12.2              | `#020618`, 14.5        |
+
+On a ground in a brand colour the fill of a card is the quiet fill of that ground. Its line takes 14 parts of a hundred of white, or 20 of ink. On a ground with white words its words take 88 parts of a hundred of white. The line of a card at rest only parts it from the page, so it is not measured.
+
+Not here: a picture in a card, and the look of a card with the keyboard on it, which is the focus of every part.
 
 ## Icons
 
