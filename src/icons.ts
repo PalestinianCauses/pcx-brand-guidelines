@@ -1,6 +1,7 @@
-// The icons of the PCX brand: which family is used where, and how large an
-// icon is in a control. Every size is in pixels.
+// The icons of the PCX brand: which family is used where, how large an
+// icon is in a control, and how thick its line is. Every size is in pixels.
 
+import SHAPE from "./shape";
 import type { StrategyPoint } from "./strategy";
 
 // A family of icons: its name, what PCX uses it for, and where it lives.
@@ -18,6 +19,14 @@ const RULES: StrategyPoint[] = [
   {
     name: "A name.",
     note: "A button with an icon alone has a name that a screen reader says.",
+  },
+  {
+    name: "A line.",
+    note: "The line of an icon is as thick on a small icon as on a large one.",
+  },
+  {
+    name: "A colour.",
+    note: "An icon has the colour of the words around it, or the colour of a link on its ground.",
   },
 ];
 
@@ -41,6 +50,13 @@ const ICONS = {
   // of a control.
   size: 16,
   sizeSmall: 14,
+
+  // How thick the line of an icon is on the screen, at every size: halfway
+  // between the thin and the thick line of the brand. The family draws its
+  // own line as a part of the size of an icon, so that line thins on a
+  // small icon, where it is needed most. This one does not: an icon stands
+  // beside words, and its line weighs what they weigh.
+  line: (SHAPE.lines.thin + SHAPE.lines.thick) / 2,
 
   // What holds for an icon in a part.
   rules: RULES,

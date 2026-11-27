@@ -11,7 +11,12 @@ const FILE_README = "README.md";
 const START_ADDRESS = "https://";
 const PATTERN_STOP = /\.$/;
 
-test("the icons keep their families, their sizes and their rules", () => {
+// The square that the family for normal work draws an icon on, and the
+// width of its own line on that square.
+const SQUARE_FAMILY = 24;
+const LINE_FAMILY = 2;
+
+test("the icons keep their families, their sizes, their line and their rules", () => {
   assert.deepEqual(ICONS, {
     families: {
       parts: {
@@ -27,6 +32,7 @@ test("the icons keep their families, their sizes and their rules", () => {
     },
     size: 16,
     sizeSmall: 14,
+    line: 1.5,
     rules: [
       {
         name: "A sign.",
@@ -36,8 +42,34 @@ test("the icons keep their families, their sizes and their rules", () => {
         name: "A name.",
         note: "A button with an icon alone has a name that a screen reader says.",
       },
+      {
+        name: "A line.",
+        note: "The line of an icon is as thick on a small icon as on a large one.",
+      },
+      {
+        name: "A colour.",
+        note: "An icon has the colour of the words around it, or the colour of a link on its ground.",
+      },
     ],
   });
+});
+
+test("the line of an icon is halfway between the two lines of the brand, and at both sizes it is thicker than the line that the family draws itself", () => {
+  const { thick, thin } = SHAPE.lines;
+
+  assert.equal(ICONS.line, (thin + thick) / 2);
+  assert.ok(ICONS.line > thin);
+  assert.ok(ICONS.line < thick);
+
+  // The family's own line is a part of the size of an icon, so it is
+  // thinner on the small icon than on the other.
+  const [own, ownSmall] = [ICONS.size, ICONS.sizeSmall].map(
+    (size) => (LINE_FAMILY * size) / SQUARE_FAMILY,
+  );
+
+  assert.ok((ownSmall ?? 0) < (own ?? 0));
+  assert.ok(ICONS.line > (own ?? 0));
+  assert.ok(ICONS.line > (ownSmall ?? 0));
 });
 
 test("the two families are not the same, and each has an address that is safe to open", () => {
@@ -70,12 +102,21 @@ test("every rule for an icon has a name and a note that ends with a stop", () =>
   });
 });
 
-test("the README names both families and both sizes as they are", async () => {
-  const readme = await readFile(FILE_README, "utf8");
+test("the README names both families, both sizes and the line as they are, and holds every rule", async () => {
+  const readme = (await readFile(FILE_README, "utf8")).replace(/\s+/g, " ");
   const { parts, sections } = ICONS.families;
 
   assert.ok(readme.includes(`${parts.name}, \`${parts.address}\``));
   assert.ok(readme.includes(`${sections.name}, \`${sections.address}\``));
   assert.ok(readme.includes(`${ICONS.size} pixels wide and high`));
   assert.ok(readme.includes(`${ICONS.sizeSmall} pixels wide and high`));
+  assert.ok(
+    readme.includes(
+      `| The line of an icon | ${ICONS.line} pixels on the screen, at both sizes |`,
+    ),
+  );
+
+  ICONS.rules.forEach((rule) => {
+    assert.ok(readme.includes(rule.note), rule.name);
+  });
 });
