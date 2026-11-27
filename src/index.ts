@@ -35,6 +35,7 @@ import LOGO, {
 } from "./logo";
 import LOOK, { GROUNDS_ORDER } from "./look";
 import MESSAGE, { getTint, GROUNDS_TINTED } from "./message";
+import NAVIGATION, { getHighlight } from "./navigation";
 import getColor, { getOklch } from "./oklch";
 import MOTION, {
   getEntranceTime,
@@ -125,6 +126,7 @@ export {
   getFocusColor,
   getLines,
   getLinesOn,
+  getHighlight,
   getLayer,
   getLink,
   getLuminance,
@@ -154,6 +156,7 @@ export {
   ICONS,
   isFocusAround,
   LAYERS,
+  NAVIGATION,
   LIGHTNESS_SHADE,
   LINK,
   LOGO,
