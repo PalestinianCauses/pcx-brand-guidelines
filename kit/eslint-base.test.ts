@@ -4,12 +4,22 @@ import test from "node:test";
 import { ESLint } from "eslint";
 
 const RULE_NAMES = "@typescript-eslint/naming-convention";
+const RULE_ROLES = "jsx-a11y/no-redundant-roles";
 
 // Names that break the rules are put together here, so that no file of this
 // repository shows one.
 const NAME_TALL_CAMEL = ["fetch", "Retry"].join("");
 const NAME_TALL_PASCAL = ["Dashboard", "Layout"].join("");
 const NAME_FIXED = ["search", "Params"].join("");
+
+// One name for each tall letter: a word that ends in b, d, f, h, k or l, then
+// a word that starts with a capital.
+const NAMES_TALL = ["tab", "word", "half", "path", "link", "label"].map(
+  (word) => [word, "Sample"].join(""),
+);
+
+// A name that React fixes, with a b before a capital.
+const NAME_FIXED_TALL = ["tab", "Index"].join("");
 
 const eslint = new ESLint();
 
@@ -23,6 +33,20 @@ const getRules = async function getRules(
   return rules;
 };
 
+// A part that draws the given lines of JSX.
+const getPart = function getPart(lines: string[]): string {
+  const code = [
+    "export const Sample = function Sample() {",
+    "  return (",
+    ...lines.map((line) => `    ${line}`),
+    "  );",
+    "};",
+    "",
+  ].join("\n");
+
+  return code;
+};
+
 test("a camel case name with a tall letter before a capital is refused", async () => {
   const rules = await getRules(`export const ${NAME_TALL_CAMEL} = 1;\n`);
   assert.ok(rules.includes(RULE_NAMES));
@@ -31,6 +55,16 @@ test("a camel case name with a tall letter before a capital is refused", async (
 test("a Pascal Case name with a tall letter before a capital is refused", async () => {
   const rules = await getRules(`export type ${NAME_TALL_PASCAL} = string;\n`);
   assert.ok(rules.includes(RULE_NAMES));
+});
+
+test("a word that ends in b, d, f, h, k or l before a capital is refused", async () => {
+  const results = await Promise.all(
+    NAMES_TALL.map((name) => getRules(`export const ${name} = 1;\n`)),
+  );
+
+  results.forEach((rules, index) =>
+    assert.ok(rules.includes(RULE_NAMES), NAMES_TALL[index]),
+  );
 });
 
 test("a short-hand name is refused", async () => {
@@ -67,6 +101,19 @@ test("a name that a library fixes stays as the library writes it", async () => {
   ].join("\n");
 
   assert.deepEqual(await getRules(code), []);
+});
+
+test("a name that a library fixes keeps a b before a capital", async () => {
+  const code = [
+    "type SampleProps = Record<string, number>;",
+    "",
+    `export const Sample = function Sample({ ${NAME_FIXED_TALL} }: SampleProps) {`,
+    `  return <input ${NAME_FIXED_TALL}={${NAME_FIXED_TALL}} />;`,
+    "};",
+    "",
+  ].join("\n");
+
+  assert.deepEqual(await getRules(code, "kit/sample.tsx"), []);
 });
 
 test("a page props type keeps the name that Next.JS fixes", async () => {
@@ -143,4 +190,34 @@ test("the short fragment form is refused", async () => {
 
   const rules = await getRules(code, "kit/sample.tsx");
   assert.ok(rules.includes("react/jsx-fragments"));
+});
+
+test("the role of a list is allowed on a `ul` and on an `ol`", async () => {
+  const parts = [
+    ['<ul role="list">', "  <li>One</li>", "</ul>"],
+    ['<ol role="list">', "  <li>One</li>", "</ol>"],
+  ];
+
+  const results = await Promise.all(
+    parts.map((lines) => getRules(getPart(lines), "kit/sample.tsx")),
+  );
+
+  results.forEach((rules, index) =>
+    assert.deepEqual(rules, [], parts[index].join("")),
+  );
+});
+
+test("another role that an element has by itself is still refused", async () => {
+  const parts = [
+    ["<ul>", '  <li role="listitem">One</li>', "</ul>"],
+    ['<button role="button" type="button">', "  One", "</button>"],
+  ];
+
+  const results = await Promise.all(
+    parts.map((lines) => getRules(getPart(lines), "kit/sample.tsx")),
+  );
+
+  results.forEach((rules, index) =>
+    assert.deepEqual(rules, [RULE_ROLES], parts[index].join("")),
+  );
 });

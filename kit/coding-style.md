@@ -17,7 +17,7 @@ The rules are written for TypeScript and JavaScript. For Python this holds:
 ## Names
 
 - A name is written in full words: `request`, `response`, `maximumRetries`. No short-hand names. A caught error is `error`, an event is `event`, a position is `index`.
-- In a camel case or Pascal Case name, a word does not end in d, f, h, k or l when the next word starts with a capital letter. When a name would break this, change the word order or pick another word: `retryFetch`, `LayoutDashboard`. The rule holds for every camel case and Pascal Case name that a project chooses, such as a variable, a function, a component, a type and a property. A name that a library fixes is not chosen, so it stays as the library writes it.
+- In a camel case or Pascal Case name, a word does not end in b, d, f, h, k or l when the next word starts with a capital letter. When a name would break this, change the word order or pick another word: `retryFetch`, `LayoutDashboard`. The rule holds for every camel case and Pascal Case name that a project chooses, such as a variable, a function, a component, a type and a property. A name that a library fixes is not chosen, so it stays as the library writes it.
 - The describing word comes after the thing: `headersMerged`, `countriesSorted`, `navigationFiltered`, `URL_BASE`, `HEADERS_DEFAULT`.
 - A yes-or-no value starts with `is`, also when a library's value gets a clearer name: `isPending` becomes `isSignInPending`.
 - The item of a list is the singular of the list, `mosque` of `mosques`, or `element` when there is no better word.
@@ -44,6 +44,7 @@ The rules are written for TypeScript and JavaScript. For Python this holds:
 - A result gets a name first and is then returned.
 - A default is given with `||`.
 - JSX uses `<Fragment>`, not the short form.
+- A role that an element has by itself is not written on it again. One role is allowed: `role="list"` on a `ul` and on an `ol`. Safari with VoiceOver does not read a list as a list once its bullets or numbers are taken off with a style, and the role is the fix.
 - There is no enum, no `for` or `while` loop and no `==`.
 
 ## Files and layout
@@ -77,7 +78,7 @@ The rules are written for TypeScript and JavaScript. For Python this holds:
 - Prettier's settings are the house settings: double quotes, semicolons, trailing commas, two spaces, lines up to 80 characters and sorted Tailwind classes. A pull request with unformatted code can't be merged.
 - ESLint lints with the house rule set: AirBnB and Prettier, plus PCX's own rules. A project that uses Next.JS adds the rules of Next.JS in its own `eslint.config.mjs`. A lint error blocks a merge. A rule is switched off only for one line, in this form: `/* eslint-disable-next-line no-unused-vars */`.
 - JavaScript code is written in TypeScript with strict checking on. Imports from `src` use the `@/` path.
-- Packages are installed with PNPM, at an exact version. `package.json` holds no `^` and no other version specifier. The lock file is committed. The Node version and the PNPM version are pinned.
+- Packages are installed with PNPM, at an exact version. `package.json` holds no `^` and no other version specifier. One field is different: in `peerDependencies`, a package names the packages that a project brings itself, each with a range of versions such as `^19.0.0`. The lock file is committed. The Node version and the PNPM version are pinned.
 - A new dependency needs a reason in the pull request. A package with a known security hole is not added.
 - No secret goes into code, commits, issues, pull requests or logs. `.env` files stay out of git. Secrets live only in the settings of GitHub or the host, and a maintainer adds them.
 - A version has three numbers. A fix raises the last, a new feature the middle, and a change that breaks existing use the first. Every release has notes in plain words.

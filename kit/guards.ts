@@ -13,15 +13,33 @@ const PATTERN_BRANCH = /^[a-z]+ing(?:-[a-z0-9]+)+$/;
 const PATTERN_COMMENT = /<!--[\s\S]*?-->/g;
 const PATTERN_COMMIT = /^(?:New|Update|Fix|Docs): Enhance through \S.*$/;
 const PATTERN_ISSUE = /\b(?:Closes|Fixes|Resolves) #\d+\b/;
+
+// What joins the versions of a range: a space between two that both hold, and
+// "||" between two of which one holds.
+const PATTERN_RANGE_JOINT = / \|\| | /;
+
+// One version of a range: an exact version, with nothing before it or with
+// one of the signs ^, ~, >=, >, <= and <.
+const PATTERN_RANGE_VERSION =
+  /^(?:\^|~|>=|>|<=|<)?\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
 const PATTERN_RELEASE = /^v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/;
 const PATTERN_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
+
+// The packages that a project brings itself. A package names each of them
+// with a range of versions, because the project chooses the version that it
+// installs.
+const FIELD_BROUGHT = "peerDependencies";
 
 const FIELDS_DEPENDENCIES = [
   "dependencies",
   "devDependencies",
   "optionalDependencies",
-  "peerDependencies",
+  FIELD_BROUGHT,
 ];
+
+const RULE_EXACT = "A package is installed at an exact version.";
+const RULE_RANGE =
+  "A package that a project brings is named with an exact version or a range of versions, such as ^19.0.0.";
 
 const SECTIONS = ["Summary", "Testing", "Limitations"];
 
@@ -105,19 +123,39 @@ export const inspectDescription = function inspectDescription(
   return problems;
 };
 
+// Whether a text is a range of versions: one or more exact versions, each with
+// nothing or one sign before it. One exact version alone is the smallest
+// range. Any version, written "*", a name such as "latest", an address and an
+// empty text are no range. package.json can hold a value that is no text, so
+// the value is read as a text first.
+const isRange = function isRange(version: string): boolean {
+  const isWritten = String(version)
+    .split(PATTERN_RANGE_JOINT)
+    .every((part) => PATTERN_RANGE_VERSION.test(part));
+
+  return isWritten;
+};
+
+// Every package is installed at an exact version. The packages that a project
+// brings itself are the one exception: a range of versions passes for them.
 export const inspectVersions = function inspectVersions(
   packageText: string,
 ): string[] {
   const packageFile = JSON.parse(packageText) as PackageFile;
 
-  return FIELDS_DEPENDENCIES.flatMap((field) =>
-    Object.entries(packageFile[field] || {})
-      .filter(([, version]) => !PATTERN_VERSION.test(version))
+  return FIELDS_DEPENDENCIES.flatMap((field) => {
+    const isBrought = field === FIELD_BROUGHT;
+    const rule = isBrought ? RULE_RANGE : RULE_EXACT;
+
+    return Object.entries(packageFile[field] || {})
+      .filter(([, version]) =>
+        isBrought ? !isRange(version) : !PATTERN_VERSION.test(version),
+      )
       .map(
         ([name, version]) =>
-          `${name} is set to "${version}" in ${field}. A package is installed at an exact version.`,
-      ),
-  );
+          `${name} is set to "${version}" in ${field}. ${rule}`,
+      );
+  });
 };
 
 // A project that is a package for npm says so in package.json:
