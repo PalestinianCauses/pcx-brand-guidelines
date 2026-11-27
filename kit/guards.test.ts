@@ -144,6 +144,29 @@ test("an empty description is refused on every point", () => {
   assert.equal(inspectDescription("").length, 4);
 });
 
+// The fields of package.json that name packages: the three whose packages
+// are installed, and the one of the packages that a project brings.
+const FIELDS_INSTALLED = [
+  "dependencies",
+  "devDependencies",
+  "optionalDependencies",
+];
+
+const FIELDS = [...FIELDS_INSTALLED, "peerDependencies"];
+
+// The problems that the guard finds for one package, named with one value in
+// one field.
+const inspectSample = function inspectSample(
+  field: string,
+  value: unknown,
+): string[] {
+  const problems = inspectVersions(
+    JSON.stringify({ [field]: { sample: value } }),
+  );
+
+  return problems;
+};
+
 test("exact versions pass", () => {
   const packageText = JSON.stringify({
     dependencies: { next: "16.4.6", react: "19.0.0-rc-66855b96-20241106" },
@@ -202,6 +225,8 @@ test("a text that is no range is refused for a package that a project brings", (
     "=19.0.0",
     ">= 19.0.0",
     "^^19.0.0",
+    "^19.0.0-.",
+    "^19.0.0-rc..2",
     "^19.0.0 ",
     " ^19.0.0",
     "^19.0.0 ||",
@@ -239,9 +264,7 @@ test("a range is read as it is written, so one that takes every version passes",
 });
 
 test("a range of versions is refused for a package that is installed", () => {
-  const fields = ["dependencies", "devDependencies", "optionalDependencies"];
-
-  fields.forEach((field) => {
+  FIELDS_INSTALLED.forEach((field) => {
     const problems = inspectVersions(
       JSON.stringify({ [field]: { sample: "^19.0.0" } }),
     );
@@ -260,20 +283,47 @@ test("a package can be installed at an exact version and brought with a range", 
   assert.deepEqual(inspectVersions(packageText), []);
 });
 
-test("a version that is no text is refused in every field", () => {
-  const fields = [
-    "dependencies",
-    "devDependencies",
-    "optionalDependencies",
-    "peerDependencies",
+test("the ending of a version is judged the same in every field, with a sign before the version or without: no piece between two dots is empty", () => {
+  const endingsWhole = ["-rc", "-rc.2", "-rc-2", "-0.4.x-y"];
+  const endingsBroken = ["-", "-.", "-rc.", "-.rc", "-rc..2"];
+
+  // An exact version in every field, and a version with a sign where a
+  // range may stand.
+  const samples = [
+    ...FIELDS.map((field) => [field, "19.0.0"]),
+    ["peerDependencies", "^19.0.0"],
   ];
 
-  fields.forEach((field) => {
-    const problems = inspectVersions(
-      JSON.stringify({ [field]: { sample: 4 } }),
+  samples.forEach(([field, version]) => {
+    endingsWhole.forEach((ending) =>
+      assert.deepEqual(
+        inspectSample(field, version + ending),
+        [],
+        field + ending,
+      ),
     );
 
-    assert.equal(problems.length, 1, field);
+    endingsBroken.forEach((ending) =>
+      assert.equal(
+        inspectSample(field, version + ending).length,
+        1,
+        field + ending,
+      ),
+    );
+  });
+});
+
+test("a version that is no text is refused in every field, and the problem shows it as it is written", () => {
+  const values = [4, ["19.0.0"], ["^19.0.0"]];
+
+  FIELDS.forEach((field) => {
+    values.forEach((value) => {
+      const written = JSON.stringify(value);
+      const problems = inspectSample(field, value);
+
+      assert.equal(problems.length, 1, field + written);
+      assert.ok(problems[0].includes(`sample is set to ${written} in`));
+    });
   });
 });
 
