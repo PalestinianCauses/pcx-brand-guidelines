@@ -14,7 +14,7 @@ import { getCard } from "./card";
 import { type GroundsID, GROUNDS } from "./colors";
 import MOTION from "./motion";
 import { getWordsOn } from "./shades";
-import SHAPE from "./shape";
+import SHAPE, { HEIGHT_FINGER, type SizeID } from "./shape";
 import type { TypeStepID } from "./type";
 
 const LAYERS = {
@@ -25,11 +25,26 @@ const LAYERS = {
   // no veil.
   veil: { color: "#000000", share: 10, blur: 4 },
 
-  // The step of the type scale for the title of a layer and for its words.
+  // The step of the type scale for the title of a dialog and of a side
+  // panel, and for their words. The words are a note, which is as large as
+  // the words of a button, as in the dialog of ShadCN. The title has a
+  // step of its own, a little larger and in weight 700, so it leads.
   type: {
-    title: "sub-heading",
-    words: "body",
+    title: "layer",
+    words: "note",
   } as Record<"title" | "words", TypeStepID>,
+
+  // The buttons at the end of a dialog and of a side panel: the small size
+  // of a control, so that they suit the words of a layer. Each keeps a
+  // place to press that is as high as a finger needs. The second button
+  // has no fill and no line at rest, as the ghost button of ShadCN, and
+  // its words have the strong colour of the ground.
+  buttons: {
+    size: "sm" as SizeID,
+    height: SHAPE.heightsControl.sm,
+    press: HEIGHT_FINGER,
+    second: "ghost",
+  },
 
   // The room inside a dialog and a side panel, and the line around every
   // layer: the thin line of the brand.

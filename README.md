@@ -8,28 +8,29 @@ Other PCX projects read the brand from here. The design system package builds it
 
 The parts arrive one at a time:
 
-| Part                        | Status    |
-| --------------------------- | --------- |
-| Colours and greys           | Available |
-| Shades and tints            | Available |
-| Fills of a main button      | Available |
-| Fonts                       | Available |
-| Logo                        | Available |
-| Type scale                  | Available |
-| Shape, lines and spacing    | Available |
-| Hard shadow                 | Available |
-| A field                     | Available |
-| The other parts of a form   | Available |
-| A message                   | Available |
-| A badge                     | Available |
-| A card                      | Available |
-| A link                      | Available |
-| The parts that hold content | Available |
-| The layers                  | Available |
-| Icons                       | Available |
-| Motion                      | Available |
-| Story, strategy and voice   | Available |
-| The look                    | Available |
+| Part                                 | Status    |
+| ------------------------------------ | --------- |
+| Colours and greys                    | Available |
+| Shades and tints                     | Available |
+| Fills of a main button               | Available |
+| Fonts                                | Available |
+| Logo                                 | Available |
+| Type scale                           | Available |
+| Shape, lines and spacing             | Available |
+| Hard shadow                          | Available |
+| A field                              | Available |
+| The other parts of a form            | Available |
+| A message                            | Available |
+| A badge                              | Available |
+| A card                               | Available |
+| A link                               | Available |
+| The parts that hold content          | Available |
+| The layers                           | Available |
+| The top bar, the menu and the footer | Available |
+| Icons                                | Available |
+| Motion                               | Available |
+| Story, strategy and voice            | Available |
+| The look                             | Available |
 
 ## Colours
 
@@ -166,19 +167,20 @@ Not here yet: what may stand beside the mark, the mark beside words, the mark be
 
 ## Type scale
 
-`src/type.ts` holds the type scale: nine steps, from the one big line of a page down to code. The three large headings and the label are shown in capitals. Their words are still written in sentence case. A sub-heading and all other text are shown as they are written.
+`src/type.ts` holds the type scale: ten steps, from the one big line of a page down to code. The three large headings and the label are shown in capitals. Their words are still written in sentence case. A sub-heading and all other text are shown as they are written.
 
-| Step        | Used for                   | Font           | Weight       | Shown in   | Phone | Laptop | Line height | Letter spacing |
-| ----------- | -------------------------- | -------------- | ------------ | ---------- | ----- | ------ | ----------- | -------------- |
-| Display     | The one big line of a page | Gilroy         | Heavy 950    | Capitals   | 54    | 98     | 92 percent  | -0.032 em      |
-| Title       | Page titles                | Gilroy         | Heavy 950    | Capitals   | 46    | 88     | 94 percent  | -0.032 em      |
-| Heading     | Section headings           | Gilroy         | Heavy 950    | Capitals   | 38    | 80     | 96 percent  | -0.032 em      |
-| Sub-heading | Block and card titles      | Gilroy         | Bold 700     | As written | 24    | 24     | 120 percent | -0.02 em       |
-| Body        | Reading text               | Gilroy         | Medium 500   | As written | 16    | 18     | 160 percent | None           |
-| Note        | Small supporting text      | Gilroy         | Medium 500   | As written | 15    | 15     | 150 percent | None           |
-| Button      | The words of a button      | Gilroy         | SemiBold 600 | As written | 15    | 15     | 20 pixels   | None           |
-| Label       | Small labels               | JetBrains Mono | Medium 500   | Capitals   | 12    | 12     | 16 pixels   | 0.14 em        |
-| Code        | Code and figures           | JetBrains Mono | Regular 400  | As written | 14    | 14     | 20 pixels   | None           |
+| Step        | Used for                                  | Font           | Weight       | Shown in   | Phone | Laptop | Line height | Letter spacing |
+| ----------- | ----------------------------------------- | -------------- | ------------ | ---------- | ----- | ------ | ----------- | -------------- |
+| Display     | The one big line of a page                | Gilroy         | Heavy 950    | Capitals   | 54    | 98     | 92 percent  | -0.032 em      |
+| Title       | Page titles                               | Gilroy         | Heavy 950    | Capitals   | 46    | 88     | 94 percent  | -0.032 em      |
+| Heading     | Section headings                          | Gilroy         | Heavy 950    | Capitals   | 38    | 80     | 96 percent  | -0.032 em      |
+| Sub-heading | Block and card titles                     | Gilroy         | Bold 700     | As written | 24    | 24     | 120 percent | -0.02 em       |
+| Layer       | The title of a dialog and of a side panel | Gilroy         | Bold 700     | As written | 20    | 20     | 130 percent | -0.01 em       |
+| Body        | Reading text                              | Gilroy         | Medium 500   | As written | 16    | 18     | 160 percent | None           |
+| Note        | Small supporting text                     | Gilroy         | Medium 500   | As written | 15    | 15     | 150 percent | None           |
+| Button      | The words of a button                     | Gilroy         | SemiBold 600 | As written | 15    | 15     | 20 pixels   | None           |
+| Label       | Small labels                              | JetBrains Mono | Medium 500   | Capitals   | 12    | 12     | 16 pixels   | 0.14 em        |
+| Code        | Code and figures                          | JetBrains Mono | Regular 400  | As written | 14    | 14     | 20 pixels   | None           |
 
 Sizes are in pixels. The phone is a screen 375 pixels wide, and the laptop is one 1440 pixels wide. Between the two a size grows evenly with the screen, and `getSize` gives the size for any width. No text is smaller than 12 pixels. A line of reading text is at least one and a half times its size, and a test holds that.
 
@@ -189,6 +191,8 @@ Since v1.1.1 a sub-heading is shown as written again. At its size, the heaviest 
 Since v2.0.0 the key of that step is written with its hyphen, as its name is: `TYPE["sub-heading"]`. Before, the key was one word, without the hyphen. Code that reads the step by the older key moves to the new one. No value of the step changed.
 
 Since v2.2.0 a button has a step of its own, in Gilroy and shown as written. Before, a button used the label step, and its small capitals in the code font were hard to read. The label step stays for small labels.
+
+Since v2.12.0 the title of a layer has a step of its own, 20 pixels in weight 700. It stands between a sub-heading and reading text. Before, the scale had nine steps, and the title of a layer was a sub-heading.
 
 Not here: scales for slides, documents and print, and the rules for paragraphs.
 
@@ -448,7 +452,11 @@ A layer adds no colour. It has the fill, the line and the words of a card on its
 
 Behind a dialog and a side panel lies a veil: black at 10 parts of a hundred, with a soft blur of 4 pixels where a browser can draw one. It is the veil of ShadCN, as it is. It tells a person that the page behind the layer waits, and it leaves that page almost as it was. A menu has no veil. The veil is light, so a layer is told from the page by its own fill and line, as a card is.
 
-A dialog and a side panel have 24 pixels of room. A dialog is at most 480 pixels wide, and a side panel at most 384. The title of a layer is set in the step of a sub-heading and its words in the step of running text.
+A dialog and a side panel have 24 pixels of room. A dialog is at most 480 pixels wide, and a side panel at most 384.
+
+The title of a dialog and of a side panel is set in a step of its own, 20 pixels in weight 700. Their words are set in the step of a note, 15 pixels, which is as large as the words of a button. That is the proportion of the dialog of ShadCN: its words are as large as the words of its button, and its title is a little larger. So the title leads, and the words are calm.
+
+The buttons at the end of a layer are 36 pixels high, the small size of a control, and each keeps a place of 44 pixels to press. So they suit the words of a layer, and a finger can still press them. The second button has no fill and no line at rest, as the ghost button of ShadCN, and its words have the strong colour of the ground.
 
 An item of a menu is 44 pixels high, which a finger needs. The item that the pointer or the keyboard is on has the quiet fill of its ground, the strong colour for its words, and a line of 2 pixels at its start in that colour. On a ground in a brand colour the quiet fill is the fill of a layer itself, so the fill alone shows nothing there: the line does.
 
@@ -465,7 +473,38 @@ A layer opens and closes in 200 milliseconds, on the curve of the brand. A dialo
 
 Words need a contrast of 4.5 or more, and the line at the start of an item needs 3. A test holds every one. The line around a layer only parts it from the page, so it is not measured.
 
-Not here: a short message that comes and goes, a hint under the pointer, and the full-screen menu of a phone.
+Since v2.12.0 the words of a layer are smaller. Before, its title was set in the step of a sub-heading, 24 pixels, and its words in the step of running text, 16 pixels or more. Its words were then larger than the words of its own buttons, which were as high as a control.
+
+Not here: a short message that comes and goes, and a hint under the pointer. The full-screen menu of a narrow place stands with the top bar, below.
+
+## The top bar, the menu and the footer
+
+`src/navigation.ts` holds the frame of a page: the top bar, the full-screen menu of a narrow place, the skip link and the footer. Every page of a website has them.
+
+The frame is drawn with what the look already has: a structure that is shown, small labels with a number, large type in capitals, and the braces of the logo around one word. Its words have the colours of the words on their ground, and its lines are the thin line of that ground, 1 pixel thick.
+
+**The top bar.** It is 76 pixels high: a control with 16 pixels above and below it. It is a row of cells with a thin line between them, and it stands between the hatched margins of a section. A link is a cell as high as the bar: a small label, in the step of a label, with 24 pixels of room at each side and its number before it. `getNumber` writes that number. The action is the main button of its ground. Where the place of the bar is narrow, the links and the action give way to a cell that opens the menu, with a word beside its sign.
+
+**The menu of a narrow place.** It fills the screen, on the ground of the page. Each link is a row with a thin line under it: its number, its name in the step of a heading, and a few quiet words in the step of a note. At its foot stands the action, as the main button in its large size. It opens in 400 milliseconds, the time of a large move, and a person who asks for less motion gets none.
+
+**The footer.** It is a sheet of cells with a thin line between them, and one line under it with the year and the legal links. A column of links stands under a small label with its number. A link is a row 44 pixels high, in the words of a button. The frame ends with the footer: what stands above it is a section of the page, which each page chooses.
+
+**The skip link.** It is the first stop of the keyboard on a page, and it jumps to the content. It is seen only with the keyboard on it, and it is 44 pixels high.
+
+The link of the page that a person is on stands between braces, so it is not marked by its colour alone. In the top bar its word has the strong colour of its ground. In the menu, where it is large, the word has the colour of the braces too. `getHighlight` gives that colour on every ground:
+
+| Ground | Highlight | Against the ground |
+| ------ | --------- | ------------------ |
+| Dark   | `#1f8bff` | 5.8                |
+| Light  | `#1f8bff` | 3.2                |
+| Purple | `#ff4fa3` | 4.5                |
+| Blue   | `#020618` | 5.8                |
+| Pink   | `#020618` | 6.6                |
+| Yellow | `#020618` | 14.5               |
+
+A mark and large words need a contrast of 3 or more, and a test holds every one. `NAVIGATION.rules` holds the rules of the frame in words.
+
+Not here: what the menu of one website holds, and a menu with a second level.
 
 ## Icons
 

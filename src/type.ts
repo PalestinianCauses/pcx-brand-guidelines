@@ -1,8 +1,8 @@
-// The type scale of the PCX brand: nine steps, from the one big line of a
+// The type scale of the PCX brand: ten steps, from the one big line of a
 // page down to code. The three large headings and the label are shown in
 // capitals. Their words are still written in sentence case. A sub-heading
 // and all other text are shown as they are written. A button has a step of
-// its own, and the label is for small labels.
+// its own, and so has the title of a layer. The label is for small labels.
 
 import type { FontID } from "./fonts";
 
@@ -13,6 +13,7 @@ export type TypeStepID =
   | "display"
   | "heading"
   | "label"
+  | "layer"
   | "note"
   | "sub-heading"
   | "title";
@@ -87,6 +88,17 @@ const TYPE: Record<TypeStepID, TypeStep> = {
     sizeLaptop: 24,
     leading: { value: 120, unit: "percent" },
     tracking: -0.02,
+    isUppercase: false,
+  },
+  "layer": {
+    name: "Layer",
+    use: "The title of a dialog and of a side panel.",
+    font: "sans",
+    weight: 700,
+    sizePhone: 20,
+    sizeLaptop: 20,
+    leading: { value: 130, unit: "percent" },
+    tracking: -0.01,
     isUppercase: false,
   },
   "body": {

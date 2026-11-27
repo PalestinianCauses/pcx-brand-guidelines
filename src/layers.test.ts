@@ -30,7 +30,8 @@ const getName = function getName(id: GroundsID): string {
 test("the layers keep their veil, their type, their sizes and their time", () => {
   assert.deepEqual(LAYERS, {
     veil: { color: "#000000", share: 10, blur: 4 },
-    type: { title: "sub-heading", words: "body" },
+    type: { title: "layer", words: "note" },
+    buttons: { size: "sm", height: 36, press: 44, second: "ghost" },
     room: 24,
     line: 1,
     widths: { dialog: 480, panel: 384 },
@@ -58,8 +59,21 @@ test("the sizes and the time of a layer are those of the shape and of the motion
   const title = TYPE[LAYERS.type.title];
   const words = TYPE[LAYERS.type.words];
 
-  assert.ok(words.sizePhone <= title.sizePhone);
-  assert.ok(words.sizeLaptop <= title.sizeLaptop);
+  assert.ok(words.sizePhone < title.sizePhone);
+  assert.ok(words.sizeLaptop < title.sizeLaptop);
+  assert.ok(title.weight > words.weight);
+
+  // The words of a layer are as large as the words of a button, and its
+  // buttons are the small size of a control, with a place to press that
+  // is as high as a finger needs.
+  assert.equal(words.sizeLaptop, TYPE.button.sizeLaptop);
+  assert.equal(words.sizePhone, TYPE.button.sizePhone);
+  assert.equal(
+    LAYERS.buttons.height,
+    SHAPE.heightsControl[LAYERS.buttons.size],
+  );
+  assert.equal(LAYERS.buttons.press, HEIGHT_FINGER);
+  assert.ok(LAYERS.buttons.height < LAYERS.buttons.press);
 });
 
 test("a layer has the fill, the line and the words of a card on every ground, and its words can be read on its fill", () => {
@@ -133,6 +147,9 @@ test("the README holds the values of a layer and its colours on every ground, as
     "`src/layers.ts` holds the layers",
     `black at ${veil.share} parts of a hundred, with a soft blur of ${veil.blur} pixels where a browser can draw one`,
     `A dialog and a side panel have ${room} pixels of room. A dialog is at most ${widths.dialog} pixels wide, and a side panel at most ${widths.panel}.`,
+    `The title of a dialog and of a side panel is set in a step of its own, ${TYPE[LAYERS.type.title].sizeLaptop} pixels in weight ${TYPE[LAYERS.type.title].weight}.`,
+    `Their words are set in the step of a note, ${TYPE[LAYERS.type.words].sizeLaptop} pixels, which is as large as the words of a button.`,
+    `The buttons at the end of a layer are ${LAYERS.buttons.height} pixels high, the small size of a control, and each keeps a place of ${LAYERS.buttons.press} pixels to press.`,
     `An item of a menu is ${item.height} pixels high`,
     `a line of ${item.mark} pixels at its start`,
     `A layer opens and closes in ${time} milliseconds`,

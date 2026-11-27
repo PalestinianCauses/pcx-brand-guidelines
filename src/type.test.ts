@@ -25,11 +25,12 @@ const STEPS_SANS: TypeStepID[] = [
   "title",
   "heading",
   "sub-heading",
+  "layer",
   "body",
   "note",
 ];
 
-test("the nine steps keep their fonts, weights, sizes and line heights", () => {
+test("the ten steps keep their fonts, weights, sizes and line heights", () => {
   const steps = Object.fromEntries(
     Object.entries(TYPE).map(([id, step]) => [
       id,
@@ -51,6 +52,7 @@ test("the nine steps keep their fonts, weights, sizes and line heights", () => {
     "title": ["sans", 950, 46, 88, 94, "percent", -0.032, true],
     "heading": ["sans", 950, 38, 80, 96, "percent", -0.032, true],
     "sub-heading": ["sans", 700, 24, 24, 120, "percent", -0.02, false],
+    "layer": ["sans", 700, 20, 20, 130, "percent", -0.01, false],
     "body": ["sans", 500, 16, 18, 160, "percent", 0, false],
     "note": ["sans", 500, 15, 15, 150, "percent", 0, false],
     "button": ["sans", 600, 15, 15, 20, "pixels", 0, false],
@@ -69,6 +71,7 @@ test("every step keeps its name and says what it is used for", () => {
     "title": ["Title", "Page titles."],
     "heading": ["Heading", "Section headings."],
     "sub-heading": ["Sub-heading", "Block and card titles."],
+    "layer": ["Layer", "The title of a dialog and of a side panel."],
     "body": ["Body", "Reading text."],
     "note": ["Note", "Small supporting text."],
     "button": ["Button", "The words of a button."],
