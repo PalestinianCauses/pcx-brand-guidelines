@@ -18,12 +18,16 @@ const PATTERN_ISSUE = /\b(?:Closes|Fixes|Resolves) #\d+\b/;
 // "||" between two of which one holds.
 const PATTERN_RANGE_JOINT = / \|\| | /;
 
-// One version of a range: an exact version, with nothing before it or with
-// one of the signs ^, ~, >=, >, <= and <.
-const PATTERN_RANGE_VERSION =
-  /^(?:\^|~|>=|>|<=|<)?\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
+// The sign that may stand before a version of a range: one of ^, ~, >=, >,
+// <= and <.
+const PATTERN_RANGE_SIGN = /^(?:\^|~|>=|>|<=|<)/;
 const PATTERN_RELEASE = /^v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/;
-const PATTERN_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
+
+// An exact version: three numbers, with or without an ending after a hyphen,
+// such as 19.0.0-rc.2. The ending is made of pieces with a dot between them.
+// A piece is letters, digits and hyphens, and no piece is empty.
+const PATTERN_VERSION =
+  /^\d+\.\d+\.\d+(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
 
 // The packages that a project brings itself. A package names each of them
 // with a range of versions, because the project chooses the version that it
@@ -43,7 +47,10 @@ const RULE_RANGE =
 
 const SECTIONS = ["Summary", "Testing", "Limitations"];
 
-type PackageFile = Partial<Record<string, Record<string, string>>>;
+// What the guard of versions reads in package.json: the fields that name
+// packages. A file can hold any value where a version belongs, so a value is
+// not taken for a text before it is looked at.
+type PackageFile = Partial<Record<string, Record<string, unknown>>>;
 
 // What the guard of a package reads in package.json. npm fixes the names of
 // its fields, so they are read by name and not written into a type.
@@ -123,15 +130,27 @@ export const inspectDescription = function inspectDescription(
   return problems;
 };
 
-// Whether a text is a range of versions: one or more exact versions, each with
-// nothing or one sign before it. One exact version alone is the smallest
-// range. Any version, written "*", a name such as "latest", an address and an
-// empty text are no range. package.json can hold a value that is no text, so
-// the value is read as a text first.
-const isRange = function isRange(version: string): boolean {
-  const isWritten = String(version)
-    .split(PATTERN_RANGE_JOINT)
-    .every((part) => PATTERN_RANGE_VERSION.test(part));
+// Whether a value is an exact version. A value that is no text is none: a
+// list that holds a version is not a version.
+const isExact = function isExact(version: unknown): boolean {
+  const isWritten =
+    typeof version === "string" && PATTERN_VERSION.test(version);
+
+  return isWritten;
+};
+
+// Whether a value is a range of versions: one or more exact versions, each
+// with nothing or one sign before it. So a range and an exact version are
+// read with the same pattern, and the two can't differ. One exact version
+// alone is the smallest range. Any version, written "*", a name such as
+// "latest", an address, an empty text and a value that is no text are no
+// range.
+const isRange = function isRange(version: unknown): boolean {
+  const isWritten =
+    typeof version === "string" &&
+    version
+      .split(PATTERN_RANGE_JOINT)
+      .every((part) => isExact(part.replace(PATTERN_RANGE_SIGN, "")));
 
   return isWritten;
 };
@@ -147,13 +166,15 @@ export const inspectVersions = function inspectVersions(
     const isBrought = field === FIELD_BROUGHT;
     const rule = isBrought ? RULE_RANGE : RULE_EXACT;
 
+    // A problem shows the value as the file writes it: a text in quotes, and
+    // a value that is no text as what it is.
     return Object.entries(packageFile[field] || {})
       .filter(([, version]) =>
-        isBrought ? !isRange(version) : !PATTERN_VERSION.test(version),
+        isBrought ? !isRange(version) : !isExact(version),
       )
       .map(
         ([name, version]) =>
-          `${name} is set to "${version}" in ${field}. ${rule}`,
+          `${name} is set to ${JSON.stringify(version)} in ${field}. ${rule}`,
       );
   });
 };
