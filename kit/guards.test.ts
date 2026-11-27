@@ -166,6 +166,117 @@ test("a package file without dependencies passes", () => {
   assert.deepEqual(inspectVersions(JSON.stringify({ name: "sample" })), []);
 });
 
+test("an exact version and a range of versions pass for a package that a project brings", () => {
+  const versions = [
+    "19.0.0",
+    "^19.0.0",
+    "~4.2.0",
+    ">=19.0.0",
+    ">=18.0.0 <20.0.0",
+    ">16.8.0 <=19.2.0",
+    "^18.0.0 || ^19.0.0",
+    "18.2.0 || 19.0.0",
+    "^19.0.0-rc.2",
+  ];
+
+  versions.forEach((version) => {
+    const packageText = JSON.stringify({
+      peerDependencies: { sample: version },
+    });
+
+    assert.deepEqual(inspectVersions(packageText), [], version);
+  });
+});
+
+test("a text that is no range is refused for a package that a project brings", () => {
+  const versions = [
+    "",
+    "*",
+    "x",
+    "latest",
+    "next",
+    "19",
+    "^19",
+    "^19.0",
+    "19.x",
+    "=19.0.0",
+    ">= 19.0.0",
+    "^^19.0.0",
+    "^19.0.0 ",
+    " ^19.0.0",
+    "^19.0.0 ||",
+    "|| ^19.0.0",
+    "^18.0.0||^19.0.0",
+    "^18.0.0  ^19.0.0",
+    "18.0.0 - 20.0.0",
+    "https://example.com/sample.tgz",
+    "git+https://example.com/sample.git",
+    "github:sample/sample",
+    "sample/sample",
+    "file:../sample",
+    "link:../sample",
+    "workspace:*",
+    "workspace:^19.0.0",
+    "npm:sample@^19.0.0",
+  ];
+
+  versions.forEach((version) => {
+    const problems = inspectVersions(
+      JSON.stringify({ peerDependencies: { sample: version } }),
+    );
+
+    assert.equal(problems.length, 1, version);
+    assert.match(problems[0], /in peerDependencies\. .+ range of versions/);
+  });
+});
+
+test("a range is read as it is written, so one that takes every version passes", () => {
+  const packageText = JSON.stringify({
+    peerDependencies: { sample: ">=0.0.0" },
+  });
+
+  assert.deepEqual(inspectVersions(packageText), []);
+});
+
+test("a range of versions is refused for a package that is installed", () => {
+  const fields = ["dependencies", "devDependencies", "optionalDependencies"];
+
+  fields.forEach((field) => {
+    const problems = inspectVersions(
+      JSON.stringify({ [field]: { sample: "^19.0.0" } }),
+    );
+
+    assert.equal(problems.length, 1, field);
+    assert.match(problems[0], /installed at an exact version/);
+  });
+});
+
+test("a package can be installed at an exact version and brought with a range", () => {
+  const packageText = JSON.stringify({
+    devDependencies: { sample: "19.2.0" },
+    peerDependencies: { sample: "^19.0.0" },
+  });
+
+  assert.deepEqual(inspectVersions(packageText), []);
+});
+
+test("a version that is no text is refused in every field", () => {
+  const fields = [
+    "dependencies",
+    "devDependencies",
+    "optionalDependencies",
+    "peerDependencies",
+  ];
+
+  fields.forEach((field) => {
+    const problems = inspectVersions(
+      JSON.stringify({ [field]: { sample: 4 } }),
+    );
+
+    assert.equal(problems.length, 1, field);
+  });
+});
+
 test("a settings file that turns off deploys from main passes", () => {
   const samples = [
     { git: { deploymentEnabled: { main: false } } },

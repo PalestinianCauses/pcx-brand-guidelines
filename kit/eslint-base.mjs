@@ -53,9 +53,9 @@ const LETTERS = "abcdefghijklmnopqrstuvwxyz"
   .split("")
   .filter((letter) => !LETTERS_ALLOWED.includes(letter));
 
-// A word does not end in d, f, h, k or l when the next word starts with a
+// A word does not end in b, d, f, h, k or l when the next word starts with a
 // capital letter.
-const PATTERN_TALL_LETTER = "[dfhkl][A-Z]";
+const PATTERN_TALL_LETTER = "[bdfhkl][A-Z]";
 const PATTERN_NAME_SHORT = [
   "^(?:",
   [...NAMES_SHORT, ...LETTERS].join("|"),
@@ -158,6 +158,12 @@ const rulesBase = [
           ],
         },
       ],
+
+      // Safari with VoiceOver does not read a list as a list once its bullets
+      // or numbers are taken off with a style. The role of a list is the fix,
+      // so a `ul` and an `ol` may carry it. Nothing else changes in what the
+      // rule refuses.
+      "jsx-a11y/no-redundant-roles": ["error", { ol: ["list"], ul: ["list"] }],
 
       "react/jsx-filename-extension": ["error", { extensions: [".tsx"] }],
       "react/jsx-fragments": ["error", "element"],
