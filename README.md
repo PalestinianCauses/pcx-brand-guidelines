@@ -443,14 +443,19 @@ Not here: the table, tabs and the accordion, and a picture in a row. The logo ha
 
 `src/icons.ts` names the icons of the brand.
 
-| Part                                                                       | Value                        |
-| -------------------------------------------------------------------------- | ---------------------------- |
-| Icons for normal work                                                      | Lucide, `https://lucide.dev` |
-| Icons for a section with animated icons, or with icons in three dimensions | Iconly, `https://iconly.pro` |
-| An icon in a control                                                       | 16 pixels wide and high      |
-| An icon in the smallest size of a control                                  | 14 pixels wide and high      |
+| Part                                                                       | Value                                   |
+| -------------------------------------------------------------------------- | --------------------------------------- |
+| Icons for normal work                                                      | Lucide, `https://lucide.dev`            |
+| Icons for a section with animated icons, or with icons in three dimensions | Iconly, `https://iconly.pro`            |
+| An icon in a control                                                       | 16 pixels wide and high                 |
+| An icon in the smallest size of a control                                  | 14 pixels wide and high                 |
+| The line of an icon                                                        | 1.5 pixels on the screen, at both sizes |
 
-An icon in a part stands for what the part does, and a screen reader passes it by. A button with an icon alone has a name that a screen reader says.
+An icon in a part stands for what the part does. A screen reader passes it by. A button with an icon alone has a name that a screen reader says.
+
+The line of an icon is as thick on a small icon as on a large one. It is halfway between the thin and the thick line of the brand. Lucide draws its own line as a part of the size of an icon, so that line thins on a small icon, where it is needed most. An icon stands beside words, and its line weighs what they weigh.
+
+An icon has the colour of the words around it, or the colour of a link on its ground. On a ground in a brand colour a link has the colour of the words, so an icon has one colour there.
 
 Not here yet: how Iconly is used, and the icons of the sections of a page.
 
