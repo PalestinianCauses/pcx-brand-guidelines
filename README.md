@@ -25,6 +25,7 @@ The parts arrive one at a time:
 | A card                      | Available |
 | A link                      | Available |
 | The parts that hold content | Available |
+| The layers                  | Available |
 | Icons                       | Available |
 | Motion                      | Available |
 | Story, strategy and voice   | Available |
@@ -214,9 +215,9 @@ Every space and every height is a multiple of 4 pixels, and a test proves it. A 
 
 A control has four sizes, under the names that ShadCN gives them. One size is 8 pixels higher than the one before it. The two smaller ones are for a dense screen that is used with a pointer, and the large one is for the one main action of a view. Both smaller ones stay above the 24 by 24 pixels that WCAG 2.2 asks of a part to press, at its level AA.
 
-The focus is what a part looks like with the keyboard on it. The line of the part takes the strong colour of its ground: white on a dark ground, and ink on a light one. It is never a brand colour, so it is not taken for a part in one of them. It stands out from the fill of every main button but one. Against the yellow fill on a dark ground the white line reaches 1.2, and there it stands out from the dark ground around it. Around the line stands a soft ring of the same colour, at half its strength. A test measures the line and the soft ring on the darkest and on the lightest grey: a part that is not words needs a contrast of 3 or more. Where a device forces its own colours, an outline of 1 pixel stands around the part, 2 pixels away.
+The focus is what a part looks like with the keyboard on it. The line of the part takes the strong colour of its ground: white on a dark ground, and ink on a light one. It is never a brand colour, so it is not taken for a part in one of them. It stands out from the fill of every button in a brand colour but one, the yellow one where the line is white. Around the line stands a soft ring of the same colour, at half its strength. A test measures the line and the soft ring on the darkest and on the lightest grey: a part that is not words needs a contrast of 3 or more. Where a device forces its own colours, an outline of 1 pixel stands around the part, 2 pixels away.
 
-On a ground in a brand colour the line of the focus has the colour of the words on that ground: white on purple, and ink on the other three. The main button of such a ground has that very colour, so nobody could see the line on its edge. There a line of 1 pixel stands around the part, 2 pixels away, in the colour of the line, with no soft ring. Against the ground that line reaches 13.8 on purple, 5.8 on blue, 6.6 on pink and 14.5 on yellow. `getFocusColor` gives the colour on any ground, and `isFocusAround` says where the line stands around a part.
+On a ground in a brand colour the line of the focus has the colour of the words on that ground: white on purple, and ink on the other three. The main button of such a ground has that very colour, so nobody could see the line on its edge. There a line of 1 pixel stands around the part, 2 pixels away, in the colour of the line, with no soft ring. Against the ground that line reaches 13.8 on purple, 5.8 on blue, 6.6 on pink and 14.5 on yellow. Where the line reaches less than 3 against the fill of a part, it stands around that part in the same way. Against the brand's yellow the white line reaches 1.2, so that holds for a yellow button on the dark and on the purple ground. `getFocusColor` gives the colour on any ground, and `isFocusAround` says where the line stands around a part.
 
 Before v2.3.0 the focus was a ring in the brand's blue, 2 pixels thick and 2 pixels away. On a blue button it was hard to tell from the button: the two reach 1.2. The name `ringFocus` is still there, with those values. It is marked as deprecated, and it leaves with the next major version.
 
@@ -438,6 +439,33 @@ They add no colour. Their titles and their words have the colours of the words o
 The title of a point and of a row is set in the step of a sub-heading, and the words under it in the step of running text. So the words are never larger than the title.
 
 Not here: the table, tabs and the accordion, and a picture in a row. The logo has a part of its own, further up.
+
+## The layers
+
+`src/layers.ts` holds the layers: the parts that open above a page. A dialog asks or tells one thing, a side panel holds more beside the page, and a menu lists what can be done.
+
+A layer adds no colour. It has the fill, the line and the words of a card on its ground, so its words stand on what was measured. It is flat: the look has no soft shadow, and it gives its hard shadow only to a part with no border, which a layer is not.
+
+Behind a dialog and a side panel lies a veil: black at 10 parts of a hundred, with a soft blur of 4 pixels where a browser can draw one. It is the veil of ShadCN, as it is. It tells a person that the page behind the layer waits, and it leaves that page almost as it was. A menu has no veil. The veil is light, so a layer is told from the page by its own fill and line, as a card is.
+
+A dialog and a side panel have 24 pixels of room. A dialog is at most 480 pixels wide, and a side panel at most 384. The title of a layer is set in the step of a sub-heading and its words in the step of running text.
+
+An item of a menu is 44 pixels high, which a finger needs. The item that the pointer or the keyboard is on has the quiet fill of its ground, the strong colour for its words, and a line of 2 pixels at its start in that colour. On a ground in a brand colour the quiet fill is the fill of a layer itself, so the fill alone shows nothing there: the line does.
+
+A layer opens and closes in 200 milliseconds, on the curve of the brand. A dialog fades in and rises 8 pixels. A side panel comes in from its edge. A menu only fades. A person who asks for less motion gets none. `getLayer` gives the colours of a layer on every ground, and `getVeiled` gives a ground as it looks under the veil:
+
+| Ground | Fill      | Line      | Words     | Title on the fill | Words on the fill | Fill of the item | Words of the item on it | Ground under the veil |
+| ------ | --------- | --------- | --------- | ----------------- | ----------------- | ---------------- | ----------------------- | --------------------- |
+| Dark   | `#0f172b` | `#1d293d` | `#90a1b9` | 17.8              | 6.6               | `#1d293d`        | 14.6                    | `#020516`             |
+| Light  | `#ffffff` | `#cad5e2` | `#45556c` | 20.0              | 7.5               | `#e2e8f0`        | 16.2                    | `#dfe1e3`             |
+| Purple | `#3f2c7d` | `#4b3a86` | `#e8e6ef` | 11.2              | 9.0               | `#3f2c7d`        | 11.2                    | `#291767`             |
+| Blue   | `#1d80ed` | `#1970d1` | `#020618` | 5.0               | 5.0               | `#1d80ed`        | 5.0                     | `#1c7de6`             |
+| Pink   | `#eb4998` | `#cc4087` | `#020618` | 5.6               | 5.6               | `#eb4998`        | 5.6                     | `#e64793`             |
+| Yellow | `#ebc749` | `#ccae42` | `#020618` | 12.2              | 12.2              | `#ebc749`        | 12.2                    | `#e6c245`             |
+
+Words need a contrast of 4.5 or more, and the line at the start of an item needs 3. A test holds every one. The line around a layer only parts it from the page, so it is not measured.
+
+Not here: a short message that comes and goes, a hint under the pointer, and the full-screen menu of a phone.
 
 ## Icons
 

@@ -25,6 +25,7 @@ import FILLS, {
 import FONTS, { ENDINGS_FONT } from "./fonts";
 import FORM, { getOn } from "./form";
 import ICONS from "./icons";
+import LAYERS, { getLayer, getVeiled } from "./layers";
 import LINK, { getLink, GROUNDS_LINK } from "./link";
 import LOGO, {
   COLORS_LOGO,
@@ -76,6 +77,7 @@ import VOICE, { WORDS_HYPE } from "./voice";
 
 export type { Badge, BadgesID } from "./badge";
 export type { Card } from "./card";
+export type { Layer } from "./layers";
 export type { Color, ColorID, GroundsID } from "./colors";
 export type { PartField, Wrong } from "./field";
 export type { Fill, MainFill } from "./fills";
@@ -123,6 +125,7 @@ export {
   getFocusColor,
   getLines,
   getLinesOn,
+  getLayer,
   getLink,
   getLuminance,
   getMainFill,
@@ -137,6 +140,7 @@ export {
   getStep,
   getWords,
   getWordsOn,
+  getVeiled,
   getWrong,
   GROUND_DARK,
   GROUND_LIGHT,
@@ -149,6 +153,7 @@ export {
   HEIGHT_FINGER,
   ICONS,
   isFocusAround,
+  LAYERS,
   LIGHTNESS_SHADE,
   LINK,
   LOGO,

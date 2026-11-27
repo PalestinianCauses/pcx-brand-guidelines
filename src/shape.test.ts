@@ -256,7 +256,7 @@ test("the line of the focus stands out from every fill but a pale one on a dark 
     [id, "light", getContrast(colorLight, FILLS[id].color)] as const,
   ]).filter(([, , contrast]) => contrast < CONTRAST_PARTS);
 
-  // There the line still stands out from the dark ground around it.
+  // There the line stands around the button, as `isFocusAround` says.
   assert.deepEqual(
     weak.map(([id, ground]) => [id, ground]),
     [["yellow", "dark"]],
@@ -274,7 +274,12 @@ test("the README says where the line of the focus is weak, as it is measured", a
 
   assert.ok(
     readme.includes(
-      `Against the yellow fill on a dark ground the white line reaches ${shown}`,
+      `Against the brand's yellow the white line reaches ${shown}`,
+    ),
+  );
+  assert.ok(
+    readme.includes(
+      "It stands out from the fill of every button in a brand colour but one, the yellow one where the line is white.",
     ),
   );
 });
@@ -347,7 +352,7 @@ test("on every ground the line of the focus has the colour of the words on that 
   });
 });
 
-test("the line of the focus stands around the main button of a ground in a brand colour, and around no other button", () => {
+test("the line of the focus stands around a part whose fill hides it: the main button of a ground in a brand colour, and the yellow button on a ground with a white line", () => {
   const grounds = Object.keys(GROUNDS) as GroundsID[];
 
   grounds.forEach((ground) => {
@@ -356,12 +361,28 @@ test("the line of the focus stands around the main button of a ground in a brand
 
     assert.equal(isFocusAround(main.color, ground), isColor, ground);
 
-    // A button in a brand colour keeps the line on its edge.
+    // A button in a brand colour keeps the line on its edge where the line
+    // can be seen there: where it reaches the contrast of a part against
+    // the fill of the button.
     IDS.forEach((id) => {
-      assert.equal(isFocusAround(FILLS[id].color, ground), false, ground);
+      const reach = getContrast(getFocusColor(ground), FILLS[id].color);
+
+      assert.equal(
+        isFocusAround(FILLS[id].color, ground),
+        reach < CONTRAST_PARTS,
+        `${id} ${ground}`,
+      );
     });
   });
 
+  // That leaves two places where a fill in a brand colour hides the line.
+  const hidden = grounds.flatMap((ground) =>
+    IDS.filter((id) => isFocusAround(FILLS[id].color, ground)).map(
+      (id) => `${id} on ${ground}`,
+    ),
+  );
+
+  assert.deepEqual(hidden, ["yellow on dark", "yellow on purple"]);
   assert.equal(isFocusAround("#FFFFFF", "purple"), true);
 });
 
@@ -382,6 +403,17 @@ test("the README says where the line of the focus stands around a part, as it is
   assert.ok(
     readme.includes(
       `${shown[0]} on purple, ${shown[1]} on blue, ${shown[2]} on pink and ${shown[3]} on yellow`,
+    ),
+  );
+
+  // The same line stands around every part whose fill hides the line.
+  const reach = getContrastShown(
+    getContrast(getFocusColor("dark"), FILLS.yellow.color),
+  );
+
+  assert.ok(
+    readme.includes(
+      `Where the line reaches less than ${CONTRAST_PARTS} against the fill of a part, it stands around that part in the same way. Against the brand's yellow the white line reaches ${reach}, so that holds for a yellow button on the dark and on the purple ground.`,
     ),
   );
 });

@@ -2,6 +2,7 @@
 // of one unit. Every value is in pixels.
 
 import COLORS, { type GroundsID, GROUNDS } from "./colors";
+import getContrast, { CONTRAST_PARTS } from "./contrast";
 import { getWordsOn, WORDS_INK, WORDS_WHITE } from "./shades";
 
 // Every space and every height is a multiple of this unit.
@@ -46,13 +47,13 @@ const SHAPE = {
   // The focus: what a part looks like with the keyboard on it. The line of
   // the part takes the strong colour of its ground: white on a dark ground
   // and ink on a light one. It is never a brand colour, so it is not taken
-  // for a part in one of them. Against a pale fill on a dark ground the
-  // white line is weak, and there it stands out from the ground around it.
-  // Around the line stands a soft ring of the same colour, at a share of
-  // its strength. Where a device forces its own colours, neither can be
-  // seen, so an outline stands around the part there, a little away from
-  // it. The same outline stands around a part that has the colour of the
-  // line itself, in the colour of the line and with no soft ring: on such a
+  // for a part in one of them. Around the line stands a soft ring of the
+  // same colour, at a share of its strength. Where a device forces its own
+  // colours, neither can be seen, so an outline stands around the part
+  // there, a little away from it. The same outline stands around a part
+  // whose fill hides the line, in the colour of the line and with no soft
+  // ring: a part that has the colour of the line itself, or a pale part on
+  // a dark ground, which the white line does not stand out from. On such a
   // part nobody could see the line. `isFocusAround` says where.
   focus: {
     width: 1,
@@ -99,13 +100,16 @@ export const getFocusColor = function getFocusColor(ground: GroundsID): string {
 };
 
 // Whether the line of the focus stands around a part, away from it, where
-// it would otherwise lie on its edge. That is so where the part has the
-// colour of the line: the main button of a ground in a brand colour.
+// it would otherwise lie on its edge. That is so where the fill of the part
+// hides the line: the line does not reach the contrast of a part against
+// it. A part with the colour of the line itself is the plainest case: the
+// main button of a ground in a brand colour. A button in the brand's yellow
+// on a ground with a white line is another.
 export const isFocusAround = function isFocusAround(
   part: string,
   ground: GroundsID,
 ): boolean {
-  const isHidden = part.toLowerCase() === getFocusColor(ground).toLowerCase();
+  const isHidden = getContrast(getFocusColor(ground), part) < CONTRAST_PARTS;
   return isHidden;
 };
 
